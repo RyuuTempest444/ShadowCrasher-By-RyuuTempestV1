@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shadow Crasher Login</title>
+  <title>Shadow Crasher Tools</title>
   <style>
     body {
       background-color: #000;
@@ -16,24 +15,23 @@
       background-attachment: fixed;
       min-height: 100vh;
       margin: 0;
-      padding: 0;
       display: flex;
       justify-content: center;
       align-items: center;
     }
-
     .container {
-      background-color: rgba(0, 0, 0, 0.8);
+      background-color: rgba(0, 0, 0, 0.85);
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 0 15px #00ff00;
+      width: 90%;
+      max-width: 400px;
       text-align: center;
     }
-
-    h1 {
+    h1, h2 {
       text-shadow: 0 0 5px #00ff00;
+      margin-bottom: 15px;
     }
-
     input {
       width: 100%;
       padding: 12px;
@@ -43,27 +41,26 @@
       background-color: #111;
       color: #00ff00;
     }
-
     button {
-      padding: 12px 20px;
-      background-color: #00ff00;
-      color: #000;
+      width: 100%;
+      padding: 12px;
+      margin: 5px 0;
       border: none;
       border-radius: 5px;
-      cursor: pointer;
+      background-color: #00ff00;
+      color: #000;
       font-weight: bold;
-      margin-top: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease;
     }
-
     button:hover {
       background-color: #00cc00;
     }
-
-    .footer {
+    footer {
       margin-top: 20px;
-      font-size: 14px;
+      font-size: 0.9em;
       color: #00ff00;
-      text-shadow: 0 0 5px #00ff00;
+      opacity: 0.7;
     }
   </style>
 </head>
@@ -77,60 +74,78 @@
 
   <div class="container" id="toolsContainer" style="display: none;">
     <h1>⚡ Shadow Crasher ⚡</h1>
-    <p><strong>Nomer target :</strong></p>
-    <input type="text" id="targetNumber" placeholder="Contoh: 6281234567890">
-    <button class="btn" onclick="attack('Ultimate Crash')">Ultimate Crash</button>
-    <button class="btn" onclick="attack('Crash Invisible')">Crash Invisible</button>
-    <button class="btn" onclick="attack('Hard Delay Invisible')">Hard Delay Invisible</button>
-    <button class="btn" onclick="attack('iOS Crash (Exp)')">iOS Crash (Exp)</button>
-    <button class="btn" onclick="attack('Android UI Killer')">Android UI Killer</button>
-    <button class="btn" onclick="logout()">LOGOUT</button>
-    <div class="footer">
-      By RyuuTempest
+    <h2 id="modeStatus"></h2>
+
+    <!-- Host Mode Only -->
+    <div id="senderSetting" style="display:none;">
+      <p><strong>Nomor Sender :</strong></p>
+      <input type="text" id="senderNumber" placeholder="Masukkan Nomor Sender" oninput="saveSender()">
     </div>
+
+    <p><strong>Nomor Target :</strong></p>
+    <input type="text" id="targetNumber" placeholder="628xxxxxx">
+
+    <button onclick="attack('Ultimate Crash')">Ultimate Crash</button>
+    <button onclick="attack('Crash Invisible')">Crash Invisible</button>
+    <button onclick="attack('Hard Delay Invisible')">Hard Delay Invisible</button>
+    <button onclick="attack('iOS Crash (Exp)')">iOS Crash (Exp)</button>
+    <button onclick="attack('Android UI Killer')">Android UI Killer</button>
+
+    <footer>By RyuuTempest</footer>
   </div>
 
-  <!-- Sound efek HAKI & Welcome -->
   <audio id="effectSound" src="https://files.catbox.moe/ophu1v.m4a"></audio>
   <audio id="welcomeSound" src="https://files.catbox.moe/h87rn6.m4a"></audio>
 
   <script>
-    // Auto-login kalau sudah pernah login
-    if (localStorage.getItem('isLoggedIn') === 'true') {
-      document.getElementById('loginContainer').style.display = 'none';
-      document.getElementById('toolsContainer').style.display = 'block';
-    }
+    let isHost = false;
 
     function checkLogin() {
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
 
-      if (username === 'RyuuTempest' && password === 'ShadowCrasher444') {
-        document.getElementById('loginContainer').style.display = 'none';
-        document.getElementById('toolsContainer').style.display = 'block';
-        localStorage.setItem('isLoggedIn', 'true');
-        document.getElementById('welcomeSound').play(); // Play Welcome Sound
+      if (username === 'RyuuHost' && password === 'Crasher444') {
+        isHost = true;
+        showTools();
+      } else if (username === 'UserUnlcok' && password === 'UserPwbyRyuu') {
+        isHost = false;
+        showTools();
       } else {
         alert('Username atau Password salah!');
       }
     }
 
-    function attack(action) {
+    function showTools() {
+      document.getElementById('loginContainer').style.display = 'none';
+      document.getElementById('toolsContainer').style.display = 'block';
+      document.getElementById('modeStatus').innerText = isHost ? 'MODE: HOST 😈' : 'MODE: USER 🧑‍💻';
+
+      if (isHost) {
+        document.getElementById('senderSetting').style.display = 'block';
+        document.getElementById('senderNumber').value = localStorage.getItem('sender') || '';
+      }
+
+      document.getElementById('welcomeSound').play();
+    }
+
+    function saveSender() {
+      const sender = document.getElementById('senderNumber').value;
+      localStorage.setItem('sender', sender);
+    }
+
+    function attack(tool) {
       const target = document.getElementById('targetNumber').value;
+      const sender = localStorage.getItem('sender') || 'Belum Disetting';
+
       if (target.trim() === '') {
         alert('Isi nomor target dulu!');
       } else {
-        alert(`Menyerang nomor: ${target}\nMenggunakan: ${action}`);
+        alert(`Menyerang nomor: ${target}\nMenggunakan: ${tool}\nNomor Pengirim Rahasia: ${sender}`);
         document.getElementById('effectSound').play();
-        setTimeout(function() {
+        setTimeout(() => {
           alert('DONE BANG OTW C1😈');
         }, 1500);
       }
-    }
-
-    function logout() {
-      localStorage.removeItem('isLoggedIn');
-      location.reload();
     }
   </script>
 </body>
