@@ -84,6 +84,7 @@
     <button class="btn" onclick="attack('Hard Delay Invisible')">Hard Delay Invisible</button>
     <button class="btn" onclick="attack('iOS Crash (Exp)')">iOS Crash (Exp)</button>
     <button class="btn" onclick="attack('Android UI Killer')">Android UI Killer</button>
+    <button class="btn" onclick="logout()">LOGOUT</button>
     <div class="footer">
       By RyuuTempest
     </div>
@@ -126,6 +127,11 @@
         }, 1500);
       }
     }
+
+    function logout() {
+      localStorage.removeItem('isLoggedIn');
+      location.reload();
+    }
   </script>
 </body>
-</html>
+  </html>
