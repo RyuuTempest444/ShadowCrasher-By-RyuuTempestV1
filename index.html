@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kaneshiro Attack Tools</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #00ff00;
+      font-family: 'Courier New', monospace;
+      background-image: url('https://files.catbox.moe/5lnwkv.jpg'); /* Gambar Kaneshiro */
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      backdrop-filter: brightness(0.5);
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 40px 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      margin: 100px auto;
+      text-align: center;
+      box-shadow: 0 0 20px #00ff00;
+    }
+    input, select, button {
+      width: 90%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 2px solid #00ff00;
+      border-radius: 5px;
+      background: none;
+      color: #00ff00;
+    }
+    button {
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #00ff00;
+      color: #000;
+    }
+    h1 {
+      margin-bottom: 25px;
+      text-shadow: 0 0 5px #00ff00;
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Page -->
+  <div class="container" id="login-page">
+    <h1>Login</h1>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">LOGIN</button>
+  </div>
+
+  <!-- Attack Menu Page -->
+  <div class="container" id="attack-page" style="display: none;">
+    <h1>Attack Tools</h1>
+    <input type="text" id="target-number" placeholder="Target Number">
+    <select id="attack-type">
+      <option>Ultimate Crash</option>
+      <option>Crash Invisible</option>
+      <option>Hard Delay Invisible</option>
+      <option>IOS Crash (Exp)</option>
+      <option>Android UI Killer</option>
+    </select>
+    <button onclick="sendBug()">SEND BUG</button>
+  </div>
+
+  <script>
+    function login() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      if (username === 'RyuuTheShadow' && password === 'CrasherNewV1') {
+        document.getElementById('login-page').style.display = 'none';
+        document.getElementById('attack-page').style.display = 'block';
+      } else {
+        alert('Login gagal! Username atau password salah.');
+      }
+    }
+
+    function sendBug() {
+      const target = document.getElementById('target-number').value;
+      const attack = document.getElementById('attack-type').value;
+
+      if (target.trim() === '') {
+        alert('Masukkan nomor target!');
+        return;
+      }
+
+      alert(`Bug terkirim ke ${target} dengan tipe: "${attack}" (Simulasi)`);
+    }
+  </script>
+</body>
+</html>
