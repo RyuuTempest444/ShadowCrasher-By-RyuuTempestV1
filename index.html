@@ -56,15 +56,15 @@
       max-width: 500px;
     }
 
+    h1 {
+      animation: glow 2s infinite;
+      font-size: 28px;
+    }
+
     @keyframes glow {
       0% { text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00; }
       50% { text-shadow: 0 0 15px #00ff00, 0 0 25px #00ff00; }
       100% { text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00; }
-    }
-
-    h1 {
-      animation: glow 2s infinite;
-      font-size: 28px;
     }
 
     input {
@@ -107,9 +107,9 @@
 
   <div class="container" id="hostContainer" style="display: none;">
     <h1>⚡ Shadow Crasher ⚡ (Host Mode)</h1>
-    <p><strong>Nomer sender :</strong></p>
+    <p><strong>Nomor Sender :</strong></p>
     <input type="text" id="senderNumber" placeholder="Contoh: 62882006305047">
-    <p><strong>Nomer target :</strong></p>
+    <p><strong>Nomor Target :</strong></p>
     <input type="text" id="targetNumberHost" placeholder="Contoh: 6281234567890">
     <button onclick="attackHost('Ultimate Crash')">Ultimate Crash</button>
     <button onclick="attackHost('Crash Invisible')">Crash Invisible</button>
@@ -121,7 +121,7 @@
 
   <div class="container" id="userContainer" style="display: none;">
     <h1>⚡ Shadow Crasher ⚡ (User Mode)</h1>
-    <p><strong>Nomer target :</strong></p>
+    <p><strong>Nomor Target :</strong></p>
     <input type="text" id="targetNumberUser" placeholder="Contoh: 6281234567890">
     <button onclick="attackUser('Ultimate Crash')">Ultimate Crash</button>
     <button onclick="attackUser('Crash Invisible')">Crash Invisible</button>
@@ -136,8 +136,8 @@
 
   <script>
     function checkLogin() {
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
 
       if (username === 'RyuuHost' && password === 'Crasher444') {
         document.getElementById('loginContainer').style.display = 'none';
@@ -175,7 +175,6 @@
       document.getElementById('loginContainer').style.display = 'block';
       document.getElementById('hostContainer').style.display = 'none';
       document.getElementById('userContainer').style.display = 'none';
-      // Reset semua kolom
       document.getElementById('username').value = '';
       document.getElementById('password').value = '';
       document.getElementById('senderNumber').value = '';
