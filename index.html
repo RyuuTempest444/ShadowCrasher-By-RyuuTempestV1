@@ -24,8 +24,8 @@
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 0 15px #00ff00;
-      width: 90%;
-      max-width: 400px;
+      width: 95%;
+      max-width: 500px;
       text-align: center;
     }
     h1, h2 {
@@ -34,24 +34,25 @@
     }
     input {
       width: 100%;
-      padding: 12px;
+      padding: 15px;
       margin: 10px 0;
       border: none;
       border-radius: 5px;
       background-color: #111;
       color: #00ff00;
+      font-size: 1em;
     }
     button {
       width: 100%;
-      padding: 12px;
-      margin: 5px 0;
+      padding: 15px;
+      margin: 8px 0;
       border: none;
       border-radius: 5px;
       background-color: #00ff00;
       color: #000;
       font-weight: bold;
       cursor: pointer;
-      transition: background 0.3s ease;
+      font-size: 1em;
     }
     button:hover {
       background-color: #00cc00;
@@ -59,7 +60,6 @@
     footer {
       margin-top: 20px;
       font-size: 0.9em;
-      color: #00ff00;
       opacity: 0.7;
     }
   </style>
@@ -72,24 +72,19 @@
     <button onclick="checkLogin()">LOGIN</button>
   </div>
 
-  <div class="container" id="toolsContainer" style="display: none;">
+  <div class="container" id="toolsContainer" style="display:none;">
     <h1>⚡ Shadow Crasher ⚡</h1>
     <h2 id="modeStatus"></h2>
 
-    <!-- Host Mode Only -->
-    <div id="senderSetting" style="display:none;">
-      <p><strong>Nomor Sender :</strong></p>
-      <input type="text" id="senderNumber" placeholder="Masukkan Nomor Sender" oninput="saveSender()">
-    </div>
-
-    <p><strong>Nomor Target :</strong></p>
-    <input type="text" id="targetNumber" placeholder="628xxxxxx">
+    <input type="text" id="senderNumber" placeholder="Nomor Sender" style="display:none;" oninput="saveSender()">
+    <input type="text" id="targetNumber" placeholder="Nomor Target">
 
     <button onclick="attack('Ultimate Crash')">Ultimate Crash</button>
     <button onclick="attack('Crash Invisible')">Crash Invisible</button>
     <button onclick="attack('Hard Delay Invisible')">Hard Delay Invisible</button>
     <button onclick="attack('iOS Crash (Exp)')">iOS Crash (Exp)</button>
     <button onclick="attack('Android UI Killer')">Android UI Killer</button>
+    <button onclick="logout()">LOGOUT</button>
 
     <footer>By RyuuTempest</footer>
   </div>
@@ -106,9 +101,11 @@
 
       if (username === 'RyuuHost' && password === 'Crasher444') {
         isHost = true;
+        saveSession('RyuuHost');
         showTools();
       } else if (username === 'UserUnlcok' && password === 'UserPwbyRyuu') {
         isHost = false;
+        saveSession('UserUnlcok');
         showTools();
       } else {
         alert('Username atau Password salah!');
@@ -121,7 +118,7 @@
       document.getElementById('modeStatus').innerText = isHost ? 'MODE: HOST 😈' : 'MODE: USER 🧑‍💻';
 
       if (isHost) {
-        document.getElementById('senderSetting').style.display = 'block';
+        document.getElementById('senderNumber').style.display = 'block';
         document.getElementById('senderNumber').value = localStorage.getItem('sender') || '';
       }
 
@@ -147,6 +144,28 @@
         }, 1500);
       }
     }
+
+    function saveSession(user) {
+      localStorage.setItem('loggedInUser', user);
+    }
+
+    function logout() {
+      localStorage.removeItem('loggedInUser');
+      location.reload();
+    }
+
+    function autoLogin() {
+      const user = localStorage.getItem('loggedInUser');
+      if (user === 'RyuuHost') {
+        isHost = true;
+        showTools();
+      } else if (user === 'UserUnlcok') {
+        isHost = false;
+        showTools();
+      }
+    }
+
+    autoLogin();
   </script>
 </body>
-  </html>
+      </html>
