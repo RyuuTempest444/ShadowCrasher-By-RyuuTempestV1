@@ -89,8 +89,9 @@
     </div>
   </div>
 
-  <!-- Sound efek HAKI -->
+  <!-- Sound efek HAKI & Welcome -->
   <audio id="effectSound" src="https://files.catbox.moe/ophu1v.m4a"></audio>
+  <audio id="welcomeSound" src="https://files.catbox.moe/h87rn6.m4a"></audio>
 
   <script>
     // Auto-login kalau sudah pernah login
@@ -107,6 +108,7 @@
         document.getElementById('loginContainer').style.display = 'none';
         document.getElementById('toolsContainer').style.display = 'block';
         localStorage.setItem('isLoggedIn', 'true');
+        document.getElementById('welcomeSound').play(); // Play Welcome Sound
       } else {
         alert('Username atau Password salah!');
       }
@@ -126,4 +128,4 @@
     }
   </script>
 </body>
-  </html>
+</html>
