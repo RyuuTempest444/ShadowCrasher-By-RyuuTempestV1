@@ -9,14 +9,17 @@
       background-color: #000;
       color: #00ff00;
       font-family: 'Courier New', monospace;
-      background-image: url('https://files.catbox.moe/5lnwkv.jpg'); /* Gambar Kaneshiro */
+      background-image: url('https://files.catbox.moe/7t0q69.jpg'); /* Link gambar Kaneshiro */
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center;
+      background-attachment: fixed;
       backdrop-filter: brightness(0.5);
       margin: 0;
       padding: 0;
+      min-height: 100vh;
     }
+
     .container {
       background-color: rgba(0, 0, 0, 0.8);
       padding: 40px 20px;
@@ -26,77 +29,44 @@
       text-align: center;
       box-shadow: 0 0 20px #00ff00;
     }
+
     input, select, button {
       width: 90%;
       padding: 12px;
       margin: 10px 0;
-      border: 2px solid #00ff00;
+      border: none;
       border-radius: 5px;
-      background: none;
+      background-color: #111;
       color: #00ff00;
+      font-size: 16px;
     }
+
     button {
-      cursor: pointer;
-      font-weight: bold;
-      transition: background 0.3s;
-    }
-    button:hover {
       background-color: #00ff00;
       color: #000;
+      cursor: pointer;
+      font-weight: bold;
     }
+
+    button:hover {
+      background-color: #00cc00;
+    }
+
     h1 {
-      margin-bottom: 25px;
-      text-shadow: 0 0 5px #00ff00;
+      margin-bottom: 20px;
+      color: #00ff00;
+      text-shadow: 0 0 10px #00ff00;
     }
   </style>
 </head>
 <body>
-  <!-- Login Page -->
-  <div class="container" id="login-page">
+  <div class="container">
     <h1>Login</h1>
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="login()">LOGIN</button>
+    <form>
+      <input type="text" placeholder="Username" required>
+      <input type="password" placeholder="Password" required>
+      <button type="submit">LOGIN</button>
+    </form>
   </div>
-
-  <!-- Attack Menu Page -->
-  <div class="container" id="attack-page" style="display: none;">
-    <h1>Attack Tools</h1>
-    <input type="text" id="target-number" placeholder="Target Number">
-    <select id="attack-type">
-      <option>Ultimate Crash</option>
-      <option>Crash Invisible</option>
-      <option>Hard Delay Invisible</option>
-      <option>IOS Crash (Exp)</option>
-      <option>Android UI Killer</option>
-    </select>
-    <button onclick="sendBug()">SEND BUG</button>
-  </div>
-
-  <script>
-    function login() {
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-
-      if (username === 'RyuuTheShadow' && password === 'CrasherNewV1') {
-        document.getElementById('login-page').style.display = 'none';
-        document.getElementById('attack-page').style.display = 'block';
-      } else {
-        alert('Login gagal! Username atau password salah.');
-      }
-    }
-
-    function sendBug() {
-      const target = document.getElementById('target-number').value;
-      const attack = document.getElementById('attack-type').value;
-
-      if (target.trim() === '') {
-        alert('Masukkan nomor target!');
-        return;
-      }
-
-      alert(`Bug terkirim ke ${target} dengan tipe: "${attack}" (Simulasi)`);
-    }
-  </script>
 </body>
 </html>
