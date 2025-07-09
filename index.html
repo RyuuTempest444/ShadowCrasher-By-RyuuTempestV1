@@ -58,6 +58,13 @@
     button:hover {
       background-color: #00cc00;
     }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #00ff00;
+      text-shadow: 0 0 5px #00ff00;
+    }
   </style>
 </head>
 <body>
@@ -77,12 +84,21 @@
     <button class="btn" onclick="attack('Hard Delay Invisible')">Hard Delay Invisible</button>
     <button class="btn" onclick="attack('iOS Crash (Exp)')">iOS Crash (Exp)</button>
     <button class="btn" onclick="attack('Android UI Killer')">Android UI Killer</button>
+    <div class="footer">
+      By RyuuTempest
+    </div>
   </div>
 
-  <!-- Sound efek HAKI dari kamu -->
+  <!-- Sound efek HAKI -->
   <audio id="effectSound" src="https://files.catbox.moe/ophu1v.m4a"></audio>
 
   <script>
+    // Auto-login kalau sudah pernah login
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+      document.getElementById('loginContainer').style.display = 'none';
+      document.getElementById('toolsContainer').style.display = 'block';
+    }
+
     function checkLogin() {
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
@@ -90,6 +106,7 @@
       if (username === 'RyuuTempest' && password === 'ShadowCrasher444') {
         document.getElementById('loginContainer').style.display = 'none';
         document.getElementById('toolsContainer').style.display = 'block';
+        localStorage.setItem('isLoggedIn', 'true');
       } else {
         alert('Username atau Password salah!');
       }
@@ -102,6 +119,9 @@
       } else {
         alert(`Menyerang nomor: ${target}\nMenggunakan: ${action}`);
         document.getElementById('effectSound').play();
+        setTimeout(function() {
+          alert('DONE BANG OTW C1😈');
+        }, 1500);
       }
     }
   </script>
