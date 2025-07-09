@@ -24,7 +24,6 @@
       overflow: hidden;
     }
 
-    /* Efek partikel neon halus */
     body::before {
       content: "";
       position: fixed;
@@ -41,12 +40,8 @@
     }
 
     @keyframes moveStars {
-      from {
-        background-position: 0 0;
-      }
-      to {
-        background-position: 1000px 1000px;
-      }
+      from { background-position: 0 0; }
+      to { background-position: 1000px 1000px; }
     }
 
     .container {
@@ -62,15 +57,9 @@
     }
 
     @keyframes glow {
-      0% {
-        text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 15px #00ff00;
-      }
-      50% {
-        text-shadow: 0 0 15px #00ff00, 0 0 25px #00ff00, 0 0 35px #00ff00;
-      }
-      100% {
-        text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 15px #00ff00;
-      }
+      0% { text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00; }
+      50% { text-shadow: 0 0 15px #00ff00, 0 0 25px #00ff00; }
+      100% { text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00; }
     }
 
     h1 {
@@ -116,19 +105,33 @@
     <button onclick="checkLogin()">LOGIN</button>
   </div>
 
-  <div class="container" id="toolsContainer" style="display: none;">
-    <h1>⚡ Shadow Crasher ⚡</h1>
+  <div class="container" id="hostContainer" style="display: none;">
+    <h1>⚡ Shadow Crasher ⚡ (Host Mode)</h1>
+    <p><strong>Nomer sender :</strong></p>
+    <input type="text" id="senderNumber" placeholder="Contoh: 62882006305047">
     <p><strong>Nomer target :</strong></p>
-    <input type="text" id="targetNumber" placeholder="Contoh: 6281234567890">
-    <button onclick="attack('Ultimate Crash')">Ultimate Crash</button>
-    <button onclick="attack('Crash Invisible')">Crash Invisible</button>
-    <button onclick="attack('Hard Delay Invisible')">Hard Delay Invisible</button>
-    <button onclick="attack('iOS Crash (Exp)')">iOS Crash (Exp)</button>
-    <button onclick="attack('Android UI Killer')">Android UI Killer</button>
+    <input type="text" id="targetNumberHost" placeholder="Contoh: 6281234567890">
+    <button onclick="attackHost('Ultimate Crash')">Ultimate Crash</button>
+    <button onclick="attackHost('Crash Invisible')">Crash Invisible</button>
+    <button onclick="attackHost('Hard Delay Invisible')">Hard Delay Invisible</button>
+    <button onclick="attackHost('iOS Crash (Exp)')">iOS Crash (Exp)</button>
+    <button onclick="attackHost('Android UI Killer')">Android UI Killer</button>
     <button onclick="logout()">LOG OUT</button>
   </div>
 
-  <!-- Sound HAKI efek -->
+  <div class="container" id="userContainer" style="display: none;">
+    <h1>⚡ Shadow Crasher ⚡ (User Mode)</h1>
+    <p><strong>Nomer target :</strong></p>
+    <input type="text" id="targetNumberUser" placeholder="Contoh: 6281234567890">
+    <button onclick="attackUser('Ultimate Crash')">Ultimate Crash</button>
+    <button onclick="attackUser('Crash Invisible')">Crash Invisible</button>
+    <button onclick="attackUser('Hard Delay Invisible')">Hard Delay Invisible</button>
+    <button onclick="attackUser('iOS Crash (Exp)')">iOS Crash (Exp)</button>
+    <button onclick="attackUser('Android UI Killer')">Android UI Killer</button>
+    <button onclick="logout()">LOG OUT</button>
+  </div>
+
+  <!-- Sound HAKI -->
   <audio id="effectSound" src="https://files.catbox.moe/ophu1v.m4a"></audio>
 
   <script>
@@ -136,16 +139,30 @@
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
 
-      if (username === 'RyuuTempest' && password === 'ShadowCrasher444') {
+      if (username === 'RyuuHost' && password === 'Crasher444') {
         document.getElementById('loginContainer').style.display = 'none';
-        document.getElementById('toolsContainer').style.display = 'block';
+        document.getElementById('hostContainer').style.display = 'block';
+      } else if (username === 'UserUnlcok' && password === 'UserPwbyRyuu') {
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('userContainer').style.display = 'block';
       } else {
         alert('Username atau Password salah!');
       }
     }
 
-    function attack(action) {
-      const target = document.getElementById('targetNumber').value;
+    function attackHost(action) {
+      const sender = document.getElementById('senderNumber').value;
+      const target = document.getElementById('targetNumberHost').value;
+      if (sender.trim() === '' || target.trim() === '') {
+        alert('Isi semua kolom terlebih dahulu!');
+      } else {
+        alert(`Mengirim dari: ${sender}\nMenyerang nomor: ${target}\nMenggunakan: ${action}`);
+        document.getElementById('effectSound').play();
+      }
+    }
+
+    function attackUser(action) {
+      const target = document.getElementById('targetNumberUser').value;
       if (target.trim() === '') {
         alert('Isi nomor target dulu!');
       } else {
@@ -155,13 +172,16 @@
     }
 
     function logout() {
-      document.getElementById('toolsContainer').style.display = 'none';
       document.getElementById('loginContainer').style.display = 'block';
-      // Reset input biar gak auto login lagi
+      document.getElementById('hostContainer').style.display = 'none';
+      document.getElementById('userContainer').style.display = 'none';
+      // Reset semua kolom
       document.getElementById('username').value = '';
       document.getElementById('password').value = '';
-      document.getElementById('targetNumber').value = '';
+      document.getElementById('senderNumber').value = '';
+      document.getElementById('targetNumberHost').value = '';
+      document.getElementById('targetNumberUser').value = '';
     }
   </script>
 </body>
-  </html>
+      </html>
