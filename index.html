@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shadow Crasher Tools</title>
   <style>
     body {
@@ -15,52 +16,95 @@
       background-attachment: fixed;
       min-height: 100vh;
       margin: 0;
+      padding: 0;
       display: flex;
       justify-content: center;
       align-items: center;
+      position: relative;
+      overflow: hidden;
     }
+
+    /* Efek partikel neon halus */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background-image: radial-gradient(#00ff00 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: moveStars 60s linear infinite;
+      opacity: 0.3;
+      z-index: 0;
+    }
+
+    @keyframes moveStars {
+      from {
+        background-position: 0 0;
+      }
+      to {
+        background-position: 1000px 1000px;
+      }
+    }
+
     .container {
+      position: relative;
+      z-index: 1;
       background-color: rgba(0, 0, 0, 0.85);
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 0 15px #00ff00;
+      text-align: center;
       width: 95%;
       max-width: 500px;
-      text-align: center;
     }
-    h1, h2 {
-      text-shadow: 0 0 5px #00ff00;
-      margin-bottom: 15px;
+
+    @keyframes glow {
+      0% {
+        text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 15px #00ff00;
+      }
+      50% {
+        text-shadow: 0 0 15px #00ff00, 0 0 25px #00ff00, 0 0 35px #00ff00;
+      }
+      100% {
+        text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 15px #00ff00;
+      }
     }
+
+    h1 {
+      animation: glow 2s infinite;
+      font-size: 28px;
+    }
+
     input {
       width: 100%;
-      padding: 15px;
-      margin: 10px 0;
+      padding: 16px;
+      margin: 12px 0;
       border: none;
       border-radius: 5px;
       background-color: #111;
       color: #00ff00;
-      font-size: 1em;
+      font-size: 16px;
     }
+
     button {
       width: 100%;
-      padding: 15px;
-      margin: 8px 0;
+      padding: 16px;
+      margin-top: 12px;
       border: none;
       border-radius: 5px;
       background-color: #00ff00;
       color: #000;
       font-weight: bold;
+      font-size: 16px;
       cursor: pointer;
-      font-size: 1em;
+      transition: background-color 0.3s ease;
     }
+
     button:hover {
       background-color: #00cc00;
-    }
-    footer {
-      margin-top: 20px;
-      font-size: 0.9em;
-      opacity: 0.7;
     }
   </style>
 </head>
@@ -72,100 +116,52 @@
     <button onclick="checkLogin()">LOGIN</button>
   </div>
 
-  <div class="container" id="toolsContainer" style="display:none;">
+  <div class="container" id="toolsContainer" style="display: none;">
     <h1>⚡ Shadow Crasher ⚡</h1>
-    <h2 id="modeStatus"></h2>
-
-    <input type="text" id="senderNumber" placeholder="Nomor Sender" style="display:none;" oninput="saveSender()">
-    <input type="text" id="targetNumber" placeholder="Nomor Target">
-
+    <p><strong>Nomer target :</strong></p>
+    <input type="text" id="targetNumber" placeholder="Contoh: 6281234567890">
     <button onclick="attack('Ultimate Crash')">Ultimate Crash</button>
     <button onclick="attack('Crash Invisible')">Crash Invisible</button>
     <button onclick="attack('Hard Delay Invisible')">Hard Delay Invisible</button>
     <button onclick="attack('iOS Crash (Exp)')">iOS Crash (Exp)</button>
     <button onclick="attack('Android UI Killer')">Android UI Killer</button>
-    <button onclick="logout()">LOGOUT</button>
-
-    <footer>By RyuuTempest</footer>
+    <button onclick="logout()">LOG OUT</button>
   </div>
 
+  <!-- Sound HAKI efek -->
   <audio id="effectSound" src="https://files.catbox.moe/ophu1v.m4a"></audio>
-  <audio id="welcomeSound" src="https://files.catbox.moe/h87rn6.m4a"></audio>
 
   <script>
-    let isHost = false;
-
     function checkLogin() {
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
 
-      if (username === 'RyuuHost' && password === 'Crasher444') {
-        isHost = true;
-        saveSession('RyuuHost');
-        showTools();
-      } else if (username === 'UserUnlcok' && password === 'UserPwbyRyuu') {
-        isHost = false;
-        saveSession('UserUnlcok');
-        showTools();
+      if (username === 'RyuuTempest' && password === 'ShadowCrasher444') {
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('toolsContainer').style.display = 'block';
       } else {
         alert('Username atau Password salah!');
       }
     }
 
-    function showTools() {
-      document.getElementById('loginContainer').style.display = 'none';
-      document.getElementById('toolsContainer').style.display = 'block';
-      document.getElementById('modeStatus').innerText = isHost ? 'MODE: HOST 😈' : 'MODE: USER 🧑‍💻';
-
-      if (isHost) {
-        document.getElementById('senderNumber').style.display = 'block';
-        document.getElementById('senderNumber').value = localStorage.getItem('sender') || '';
-      }
-
-      document.getElementById('welcomeSound').play();
-    }
-
-    function saveSender() {
-      const sender = document.getElementById('senderNumber').value;
-      localStorage.setItem('sender', sender);
-    }
-
-    function attack(tool) {
+    function attack(action) {
       const target = document.getElementById('targetNumber').value;
-      const sender = localStorage.getItem('sender') || 'Belum Disetting';
-
       if (target.trim() === '') {
         alert('Isi nomor target dulu!');
       } else {
-        alert(`Menyerang nomor: ${target}\nMenggunakan: ${tool}\nNomor Pengirim Rahasia: ${sender}`);
+        alert(`Menyerang nomor: ${target}\nMenggunakan: ${action}`);
         document.getElementById('effectSound').play();
-        setTimeout(() => {
-          alert('DONE BANG OTW C1😈');
-        }, 1500);
       }
-    }
-
-    function saveSession(user) {
-      localStorage.setItem('loggedInUser', user);
     }
 
     function logout() {
-      localStorage.removeItem('loggedInUser');
-      location.reload();
+      document.getElementById('toolsContainer').style.display = 'none';
+      document.getElementById('loginContainer').style.display = 'block';
+      // Reset input biar gak auto login lagi
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+      document.getElementById('targetNumber').value = '';
     }
-
-    function autoLogin() {
-      const user = localStorage.getItem('loggedInUser');
-      if (user === 'RyuuHost') {
-        isHost = true;
-        showTools();
-      } else if (user === 'UserUnlcok') {
-        isHost = false;
-        showTools();
-      }
-    }
-
-    autoLogin();
   </script>
 </body>
-      </html>
+  </html>
