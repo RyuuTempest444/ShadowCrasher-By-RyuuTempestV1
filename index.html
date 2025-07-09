@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shadow Crasher - By RyuuTempest</title>
+  <title>Shadow Crasher Login</title>
   <style>
     body {
       background-color: #000;
@@ -17,17 +17,13 @@
       min-height: 100vh;
       margin: 0;
       padding: 0;
-    }
-
-    .overlay {
-      background-color: rgba(0, 0, 0, 0.7);
-      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
     .container {
+      background-color: rgba(0, 0, 0, 0.8);
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 0 15px #00ff00;
@@ -38,9 +34,17 @@
       text-shadow: 0 0 5px #00ff00;
     }
 
-    .btn {
-      display: block;
-      margin: 15px auto;
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+      background-color: #111;
+      color: #00ff00;
+    }
+
+    button {
       padding: 12px 20px;
       background-color: #00ff00;
       color: #000;
@@ -50,21 +54,40 @@
       font-weight: bold;
     }
 
-    .btn:hover {
+    button:hover {
       background-color: #00cc00;
     }
   </style>
 </head>
 <body>
-  <div class="overlay">
-    <div class="container">
-      <h1>⚡ Shadow Crasher ⚡</h1>
-      <button class="btn">Ultimate Crash</button>
-      <button class="btn">Crash Invisible</button>
-      <button class="btn">Hard Delay Invisible</button>
-      <button class="btn">iOS Crash (Exp)</button>
-      <button class="btn">Android UI Killer</button>
-    </div>
+  <div class="container" id="loginContainer">
+    <h1>Login Tools</h1>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="checkLogin()">LOGIN</button>
   </div>
+
+  <div class="container" id="toolsContainer" style="display: none;">
+    <h1>⚡ Shadow Crasher ⚡</h1>
+    <button class="btn">Ultimate Crash</button>
+    <button class="btn">Crash Invisible</button>
+    <button class="btn">Hard Delay Invisible</button>
+    <button class="btn">iOS Crash (Exp)</button>
+    <button class="btn">Android UI Killer</button>
+  </div>
+
+  <script>
+    function checkLogin() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      if (username === 'RyuuTempest' && password === 'ShadowCrasher444') {
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('toolsContainer').style.display = 'block';
+      } else {
+        alert('Username atau Password salah!');
+      }
+    }
+  </script>
 </body>
-</html>
+    </html>
