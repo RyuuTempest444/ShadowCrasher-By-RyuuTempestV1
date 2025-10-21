@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Shadow Crasher Tools</title>
   <style>
     body {
@@ -54,11 +54,13 @@
       text-align: center;
       width: 95%;
       max-width: 500px;
+      margin: 12px;
     }
 
     h1 {
       animation: glow 2s infinite;
       font-size: 28px;
+      margin: 12px 0 8px 0;
     }
 
     @keyframes glow {
@@ -95,10 +97,57 @@
     button:hover {
       background-color: #00cc00;
     }
+
+    /* === Esganja tag styles (gabungan kotak yang lo mau) === */
+    .esganja-tag {
+      display: inline-block;
+      background: linear-gradient(180deg, rgba(0, 20, 0, 0.6), rgba(0,0,0,0.6));
+      padding: 10px 12px;
+      border-radius: 8px;
+      box-shadow: 0 6px 20px rgba(0,255,0,0.06), inset 0 1px 0 rgba(255,255,255,0.02);
+      border: 1px solid rgba(0,255,0,0.12);
+      margin-bottom: 10px;
+      text-align: left;
+    }
+
+    .esganja-tag .tag-text {
+      margin: 0;
+      font-family: "Courier New", Courier, monospace;
+      font-weight: 700;
+      font-size: 15px;
+      line-height: 1;
+      color: #bfffbf;
+      letter-spacing: 0.6px;
+      white-space: pre; /* penting supaya kotak tetap rapi */
+      text-shadow: 0 1px 0 rgba(0,0,0,0.7);
+    }
+
+    /* small screens */
+    @media (max-width: 420px) {
+      .esganja-tag .tag-text { font-size: 13px; }
+      .container { padding: 18px; max-width: 360px; }
+    }
+
+    /* optional subtle neon pulse for the tag */
+    @keyframes tagPulse {
+      0% { box-shadow: 0 6px 20px rgba(0,255,0,0.03); }
+      50% { box-shadow: 0 8px 28px rgba(0,255,0,0.09); }
+      100% { box-shadow: 0 6px 20px rgba(0,255,0,0.03); }
+    }
+    .esganja-tag { animation: tagPulse 3.5s ease-in-out infinite; }
+
   </style>
 </head>
 <body>
   <div class="container" id="loginContainer">
+    <!-- TAG disisipin di atas judul pada container -->
+    <div class="esganja-tag" aria-hidden="true">
+<pre class="tag-text">╔═══◆═══◇═══◆═══╗
+║ Esganja92               ║
+║ Ryuu(19)🕷️ | OWNER ║
+╚═══◆═══◇═══◆═══╝</pre>
+    </div>
+
     <h1>Login Tools</h1>
     <input type="text" id="username" placeholder="Username">
     <input type="password" id="password" placeholder="Password">
@@ -106,6 +155,14 @@
   </div>
 
   <div class="container" id="hostContainer" style="display: none;">
+    <!-- TAG juga ada di area host -->
+    <div class="esganja-tag" aria-hidden="true">
+<pre class="tag-text">╔═══◆═══◇═══◆═══╗
+║ Esganja92               ║
+║ Ryuu(19)🕷️ | OWNER ║
+╚═══◆═══◇═══◆═══╝</pre>
+    </div>
+
     <h1>⚡ Shadow Crasher ⚡ (Host Mode)</h1>
     <p><strong>Nomor Sender :</strong></p>
     <input type="text" id="senderNumber" placeholder="Contoh: 62882006305047">
@@ -120,6 +177,14 @@
   </div>
 
   <div class="container" id="userContainer" style="display: none;">
+    <!-- TAG juga ada di area user -->
+    <div class="esganja-tag" aria-hidden="true">
+<pre class="tag-text">╔═══◆═══◇═══◆═══╗
+║ Esganja92               ║
+║ Ryuu(19)🕷️ | OWNER ║
+╚═══◆═══◇═══◆═══╝</pre>
+    </div>
+
     <h1>⚡ Shadow Crasher ⚡ (User Mode)</h1>
     <p><strong>Nomor Target :</strong></p>
     <input type="text" id="targetNumberUser" placeholder="Contoh: 6281234567890">
@@ -183,4 +248,4 @@
     }
   </script>
 </body>
-      </html>
+                                        </html>
