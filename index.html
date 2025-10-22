@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+          <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -121,7 +121,7 @@
       text-shadow: 0 1px 0 rgba(0,0,0,0.7);
     }
 
-    /* Quote style */
+    /* Quote style (LOGIN only) */
     .quote {
       margin-top: 12px;
       font-style: italic;
@@ -142,6 +142,21 @@
       opacity: 0.9;
     }
 
+    /* Emperor banner for main menu */
+    .emperor {
+      margin-top: 8px;
+      font-weight: 900;
+      color: #c4ffd1;
+      letter-spacing: 1px;
+      font-size: 13px;
+      text-transform: uppercase;
+      text-shadow: 0 1px 0 rgba(0,0,0,0.6);
+      border: 1px dashed rgba(0,255,0,0.08);
+      padding: 6px 10px;
+      border-radius: 6px;
+      display: inline-block;
+    }
+
     /* WhatsApp contact button */
     .wa-btn {
       display: inline-flex;
@@ -159,6 +174,19 @@
     }
 
     .wa-btn:hover { opacity: 0.92; transform: translateY(-1px); }
+
+    /* TikTok link style */
+    .tiktok {
+      display: block;
+      margin-top: 8px;
+      font-family: "Courier New", monospace;
+      font-size: 13px;
+      color: #9fffbf;
+      text-decoration: none;
+      opacity: 0.95;
+    }
+
+    .tiktok:hover { text-decoration: underline; opacity: 1; }
 
     @media (max-width: 420px) {
       .esganja-tag .tag-text { font-size: 13px; }
@@ -180,7 +208,7 @@
 
     <h1>Login Tools</h1>
 
-    <!-- Quote yang lo minta -->
+    <!-- Quote only on LOGIN -->
     <div class="quote" aria-hidden="true">
       "jika dia tak memilihmu maka  pergilah kamu hanya menganggunya"
       <span class="author">—RyuuSaid—</span>
@@ -190,10 +218,11 @@
     <input type="password" id="password" placeholder="Password">
     <button onclick="checkLogin()">LOGIN</button>
 
-    <!-- kontak WA sekali klik -->
-    <a id="waContact" class="wa-btn" href="https://wa.me/62882006305047" target="_blank" rel="noopener noreferrer" aria-label="Chat WhatsApp Ryuu">
+    <!-- kontak WA sekali klik + TikTok di bawahnya (Login) -->
+    <a id="waContactLogin" class="wa-btn" href="https://wa.me/62882006305047" target="_blank" rel="noopener noreferrer" aria-label="Chat WhatsApp Ryuu">
       📲 Chat Ryuu via WA — 62882006305047
     </a>
+    <a class="tiktok" href="https://www.tiktok.com/@ryunodev" target="_blank" rel="noopener noreferrer">@ryunodev — TikTok</a>
 
     <p style="margin-top:8px;font-size:12px;opacity:.7;text-align:left;">
       Website: <a id="siteLink" href="#" target="_blank" style="color:#9fffbf;text-decoration:none;"></a>
@@ -210,10 +239,8 @@
 
     <h1>⚡ Shadow Crasher ⚡ (Host Mode)</h1>
 
-    <div class="quote" aria-hidden="true">
-      "jika dia tak memilihmu maka  pergilah kamu hanya menganggunya"
-      <span class="author">—RyuuSaid—</span>
-    </div>
+    <!-- Emperor banner in main menu (Host) -->
+    <div class="emperor" aria-hidden="true">EmperorRyuuReturns</div>
 
     <p><strong>Nomor Sender :</strong></p>
     <input type="text" id="senderNumber" placeholder="Contoh: 62882006305047">
@@ -225,10 +252,11 @@
     <button onclick="attackHost('iOS Crash (Exp)')">iOS Crash (Exp)</button>
     <button onclick="attackHost('Android UI Killer')">Android UI Killer</button>
 
-    <!-- WA button juga di area host -->
+    <!-- WA + TikTok in Host -->
     <a class="wa-btn" href="https://wa.me/62882006305047" target="_blank" rel="noopener noreferrer" aria-label="Chat WhatsApp Ryuu">
       📲 Hubungi Owner — 62882006305047
     </a>
+    <a class="tiktok" href="https://www.tiktok.com/@ryunodev" target="_blank" rel="noopener noreferrer">@ryunodev — TikTok</a>
 
     <button onclick="logout()" style="margin-top:12px;background:#ff6666;color:#000;">LOG OUT</button>
   </div>
@@ -243,10 +271,8 @@
 
     <h1>⚡ Shadow Crasher ⚡ (User Mode)</h1>
 
-    <div class="quote" aria-hidden="true">
-      "jika dia tak memilihmu maka  pergilah kamu hanya menganggunya"
-      <span class="author">—RyuuSaid—</span>
-    </div>
+    <!-- Emperor banner in main menu (User) -->
+    <div class="emperor" aria-hidden="true">EmperorRyuuReturns</div>
 
     <p><strong>Nomor Target :</strong></p>
     <input type="text" id="targetNumberUser" placeholder="Contoh: 6281234567890">
@@ -256,9 +282,11 @@
     <button onclick="attackUser('iOS Crash (Exp)')">iOS Crash (Exp)</button>
     <button onclick="attackUser('Android UI Killer')">Android UI Killer</button>
 
+    <!-- WA + TikTok in User -->
     <a class="wa-btn" href="https://wa.me/62882006305047" target="_blank" rel="noopener noreferrer" aria-label="Chat WhatsApp Ryuu">
       📲 Hubungi Owner — 62882006305047
     </a>
+    <a class="tiktok" href="https://www.tiktok.com/@ryunodev" target="_blank" rel="noopener noreferrer">@ryunodev — TikTok</a>
 
     <button onclick="logout()" style="margin-top:12px;background:#ff6666;color:#000;">LOG OUT</button>
   </div>
@@ -300,7 +328,7 @@
       if (sender.trim() === '' || target.trim() === '') {
         alert('Isi semua kolom terlebih dahulu!');
       } else {
-        // Simulasi / demo — hanya alert supaya aman untuk dipamerin
+        // Simulasi / demo — hanya alert supaya aman untuk dipamerin di lab
         alert(`(DEMO) Mengirim dari: ${sender}\nMenyerang nomor: ${target}\nMenggunakan: ${action}`);
         document.getElementById('effectSound').play();
       }
@@ -311,7 +339,7 @@
       if (target.trim() === '') {
         alert('Isi nomor target dulu!');
       } else {
-        // Simulasi / demo — hanya alert supaya aman untuk dipamerin
+        // Simulasi / demo — hanya alert supaya aman untuk dipamerin di lab
         alert(`(DEMO) Menyerang nomor: ${target}\nMenggunakan: ${action}`);
         document.getElementById('effectSound').play();
       }
@@ -329,4 +357,4 @@
     }
   </script>
 </body>
-    </html>
+  </html>
