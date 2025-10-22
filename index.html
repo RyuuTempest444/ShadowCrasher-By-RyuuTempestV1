@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Shadow Crasher Tools</title>
+  <meta name="description" content="Shadow Crasher by RyuuTempest - demo" />
   <style>
     body {
       background-color: #000;
@@ -47,13 +48,13 @@
     .container {
       position: relative;
       z-index: 1;
-      background-color: rgba(0, 0, 0, 0.85);
-      padding: 30px;
+      background-color: rgba(0, 0, 0, 0.88);
+      padding: 28px;
       border-radius: 10px;
-      box-shadow: 0 0 15px #00ff00;
+      box-shadow: 0 0 18px #00ff00;
       text-align: center;
       width: 95%;
-      max-width: 500px;
+      max-width: 520px;
       margin: 12px;
     }
 
@@ -71,40 +72,38 @@
 
     input {
       width: 100%;
-      padding: 16px;
+      padding: 14px;
       margin: 12px 0;
       border: none;
-      border-radius: 5px;
-      background-color: #111;
+      border-radius: 6px;
+      background-color: #0f0f0f;
       color: #00ff00;
-      font-size: 16px;
+      font-size: 15px;
     }
 
     button {
       width: 100%;
-      padding: 16px;
-      margin-top: 12px;
+      padding: 14px;
+      margin-top: 10px;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
       background-color: #00ff00;
       color: #000;
       font-weight: bold;
-      font-size: 16px;
+      font-size: 15px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: background-color 0.2s ease;
     }
 
-    button:hover {
-      background-color: #00cc00;
-    }
+    button:hover { background-color: #00cc00; }
 
-    /* === Esganja tag styles (gabungan kotak yang lo mau) === */
+    /* Esganja tag */
     .esganja-tag {
       display: inline-block;
       background: linear-gradient(180deg, rgba(0, 20, 0, 0.6), rgba(0,0,0,0.6));
       padding: 10px 12px;
       border-radius: 8px;
-      box-shadow: 0 6px 20px rgba(0,255,0,0.06), inset 0 1px 0 rgba(255,255,255,0.02);
+      box-shadow: 0 8px 30px rgba(0,255,0,0.05), inset 0 1px 0 rgba(255,255,255,0.02);
       border: 1px solid rgba(0,255,0,0.12);
       margin-bottom: 10px;
       text-align: left;
@@ -118,29 +117,60 @@
       line-height: 1;
       color: #bfffbf;
       letter-spacing: 0.6px;
-      white-space: pre; /* penting supaya kotak tetap rapi */
+      white-space: pre;
       text-shadow: 0 1px 0 rgba(0,0,0,0.7);
     }
 
-    /* small screens */
-    @media (max-width: 420px) {
-      .esganja-tag .tag-text { font-size: 13px; }
-      .container { padding: 18px; max-width: 360px; }
+    /* Quote style */
+    .quote {
+      margin-top: 12px;
+      font-style: italic;
+      color: #9fffbf;
+      opacity: 0.95;
+      font-size: 13px;
+      border-left: 3px solid rgba(0,255,0,0.25);
+      padding-left: 10px;
+      text-align: left;
     }
 
-    /* optional subtle neon pulse for the tag */
-    @keyframes tagPulse {
-      0% { box-shadow: 0 6px 20px rgba(0,255,0,0.03); }
-      50% { box-shadow: 0 8px 28px rgba(0,255,0,0.09); }
-      100% { box-shadow: 0 6px 20px rgba(0,255,0,0.03); }
+    .quote .author {
+      display: block;
+      margin-top: 6px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      font-size: 12px;
+      opacity: 0.9;
     }
-    .esganja-tag { animation: tagPulse 3.5s ease-in-out infinite; }
+
+    /* WhatsApp contact button */
+    .wa-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: linear-gradient(90deg, rgba(0,255,0,0.95), rgba(0,200,0,0.9));
+      color: #001200;
+      font-weight: 800;
+      text-decoration: none;
+      font-family: "Courier New", monospace;
+      box-shadow: 0 6px 18px rgba(0,255,0,0.08);
+    }
+
+    .wa-btn:hover { opacity: 0.92; transform: translateY(-1px); }
+
+    @media (max-width: 420px) {
+      .esganja-tag .tag-text { font-size: 13px; }
+      .container { padding: 18px; max-width: 380px; }
+      .quote { font-size: 12px; }
+    }
 
   </style>
 </head>
 <body>
   <div class="container" id="loginContainer">
-    <!-- TAG disisipin di atas judul pada container -->
+    <!-- TAG -->
     <div class="esganja-tag" aria-hidden="true">
 <pre class="tag-text">╔═══◆═══◇═══◆═══╗
 ║ Esganja92               ║
@@ -149,13 +179,28 @@
     </div>
 
     <h1>Login Tools</h1>
+
+    <!-- Quote yang lo minta -->
+    <div class="quote" aria-hidden="true">
+      "jika dia tak memilihmu maka  pergilah kamu hanya menganggunya"
+      <span class="author">—RyuuSaid—</span>
+    </div>
+
     <input type="text" id="username" placeholder="Username">
     <input type="password" id="password" placeholder="Password">
     <button onclick="checkLogin()">LOGIN</button>
+
+    <!-- kontak WA sekali klik -->
+    <a id="waContact" class="wa-btn" href="https://wa.me/62882006305047" target="_blank" rel="noopener noreferrer" aria-label="Chat WhatsApp Ryuu">
+      📲 Chat Ryuu via WA — 62882006305047
+    </a>
+
+    <p style="margin-top:8px;font-size:12px;opacity:.7;text-align:left;">
+      Website: <a id="siteLink" href="#" target="_blank" style="color:#9fffbf;text-decoration:none;"></a>
+    </p>
   </div>
 
   <div class="container" id="hostContainer" style="display: none;">
-    <!-- TAG juga ada di area host -->
     <div class="esganja-tag" aria-hidden="true">
 <pre class="tag-text">╔═══◆═══◇═══◆═══╗
 ║ Esganja92               ║
@@ -164,6 +209,12 @@
     </div>
 
     <h1>⚡ Shadow Crasher ⚡ (Host Mode)</h1>
+
+    <div class="quote" aria-hidden="true">
+      "jika dia tak memilihmu maka  pergilah kamu hanya menganggunya"
+      <span class="author">—RyuuSaid—</span>
+    </div>
+
     <p><strong>Nomor Sender :</strong></p>
     <input type="text" id="senderNumber" placeholder="Contoh: 62882006305047">
     <p><strong>Nomor Target :</strong></p>
@@ -173,11 +224,16 @@
     <button onclick="attackHost('Hard Delay Invisible')">Hard Delay Invisible</button>
     <button onclick="attackHost('iOS Crash (Exp)')">iOS Crash (Exp)</button>
     <button onclick="attackHost('Android UI Killer')">Android UI Killer</button>
-    <button onclick="logout()">LOG OUT</button>
+
+    <!-- WA button juga di area host -->
+    <a class="wa-btn" href="https://wa.me/62882006305047" target="_blank" rel="noopener noreferrer" aria-label="Chat WhatsApp Ryuu">
+      📲 Hubungi Owner — 62882006305047
+    </a>
+
+    <button onclick="logout()" style="margin-top:12px;background:#ff6666;color:#000;">LOG OUT</button>
   </div>
 
   <div class="container" id="userContainer" style="display: none;">
-    <!-- TAG juga ada di area user -->
     <div class="esganja-tag" aria-hidden="true">
 <pre class="tag-text">╔═══◆═══◇═══◆═══╗
 ║ Esganja92               ║
@@ -186,6 +242,12 @@
     </div>
 
     <h1>⚡ Shadow Crasher ⚡ (User Mode)</h1>
+
+    <div class="quote" aria-hidden="true">
+      "jika dia tak memilihmu maka  pergilah kamu hanya menganggunya"
+      <span class="author">—RyuuSaid—</span>
+    </div>
+
     <p><strong>Nomor Target :</strong></p>
     <input type="text" id="targetNumberUser" placeholder="Contoh: 6281234567890">
     <button onclick="attackUser('Ultimate Crash')">Ultimate Crash</button>
@@ -193,21 +255,38 @@
     <button onclick="attackUser('Hard Delay Invisible')">Hard Delay Invisible</button>
     <button onclick="attackUser('iOS Crash (Exp)')">iOS Crash (Exp)</button>
     <button onclick="attackUser('Android UI Killer')">Android UI Killer</button>
-    <button onclick="logout()">LOG OUT</button>
+
+    <a class="wa-btn" href="https://wa.me/62882006305047" target="_blank" rel="noopener noreferrer" aria-label="Chat WhatsApp Ryuu">
+      📲 Hubungi Owner — 62882006305047
+    </a>
+
+    <button onclick="logout()" style="margin-top:12px;background:#ff6666;color:#000;">LOG OUT</button>
   </div>
 
   <!-- Sound HAKI -->
   <audio id="effectSound" src="https://files.catbox.moe/ophu1v.m4a"></audio>
 
   <script>
+    /* ================= CONFIG =================
+       Ubah nilai di bawah ini untuk set website URL
+       dan password dengan cepat.
+       ==========================================*/
+    const websiteUrl = 'https://ryuutempest444.github.io/ShadowCrasher-By-RyuuTempestV1/';
+    const masterPw = 'Crasher444'; // current host pw (ubah sesuai kebutuhan)
+    const userPw = 'UserPwbyRyuu';  // user account pw (ubah sesuai kebutuhan)
+
+    // tampilkan link website di UI
+    document.getElementById('siteLink').textContent = websiteUrl;
+    document.getElementById('siteLink').href = websiteUrl;
+
     function checkLogin() {
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value.trim();
 
-      if (username === 'RyuuHost' && password === 'Crasher444') {
+      if (username === 'RyuuHost' && password === masterPw) {
         document.getElementById('loginContainer').style.display = 'none';
         document.getElementById('hostContainer').style.display = 'block';
-      } else if (username === 'UserUnlcok' && password === 'UserPwbyRyuu') {
+      } else if (username === 'UserUnlcok' && password === userPw) {
         document.getElementById('loginContainer').style.display = 'none';
         document.getElementById('userContainer').style.display = 'block';
       } else {
@@ -221,7 +300,8 @@
       if (sender.trim() === '' || target.trim() === '') {
         alert('Isi semua kolom terlebih dahulu!');
       } else {
-        alert(`Mengirim dari: ${sender}\nMenyerang nomor: ${target}\nMenggunakan: ${action}`);
+        // Simulasi / demo — hanya alert supaya aman untuk dipamerin
+        alert(`(DEMO) Mengirim dari: ${sender}\nMenyerang nomor: ${target}\nMenggunakan: ${action}`);
         document.getElementById('effectSound').play();
       }
     }
@@ -231,7 +311,8 @@
       if (target.trim() === '') {
         alert('Isi nomor target dulu!');
       } else {
-        alert(`Menyerang nomor: ${target}\nMenggunakan: ${action}`);
+        // Simulasi / demo — hanya alert supaya aman untuk dipamerin
+        alert(`(DEMO) Menyerang nomor: ${target}\nMenggunakan: ${action}`);
         document.getElementById('effectSound').play();
       }
     }
@@ -248,4 +329,4 @@
     }
   </script>
 </body>
-                                        </html>
+    </html>
