@@ -1,208 +1,437 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shadow Crasher Tools</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shadow Crasher — Sweep Mode</title>
   <style>
-    body {
-      background-color: #000;
-      color: #00ff00;
-      font-family: 'Courier New', monospace;
-      background-image: url('https://files.catbox.moe/6c41es.jpg');
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-position: center;
-      background-attachment: fixed;
-      min-height: 100vh;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
+    :root{
+      --neon: #00ff00;
+      --neon-dim: #9fffbf;
+      --bg-alpha: 0.88;
+      --accent: rgba(0,255,0,0.08);
+      --danger: #ff4444;
+      --glass: rgba(0,0,0,0.75);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:"Courier New",monospace;background:#000;color:var(--neon);-webkit-font-smoothing:antialiased}
+    body{
+      background-image:url('https://files.catbox.moe/6c41es.jpg');
+      background-size:cover;background-position:center;background-attachment:fixed;
+      display:flex;align-items:center;justify-content:center;overflow:hidden;
     }
 
-    .container {
-      background-color: rgba(0, 0, 0, 0.85);
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px #00ff00;
-      text-align: center;
-      width: 95%;
-      max-width: 500px;
-      z-index: 2;
+    /* grid dots */
+    body::before{
+      content:"";position:fixed;inset:0;pointer-events:none;
+      background-image:radial-gradient(var(--neon) 1px, transparent 1px);
+      background-size:50px 50px;opacity:0.14;animation:moveStars 60s linear infinite;z-index:0;
     }
+    @keyframes moveStars{from{background-position:0 0}to{background-position:1000px 1000px}}
 
-    h1 {
-      animation: glow 2s infinite;
-      font-size: 28px;
+    /* container */
+    .card{
+      position:relative;z-index:2;
+      width:95%;max-width:640px;padding:26px;border-radius:12px;
+      background:linear-gradient(180deg, rgba(0,0,0,0.9), rgba(0,0,0,0.85));
+      border:1px solid rgba(0,255,0,0.06);box-shadow:0 8px 40px rgba(0,255,0,0.03);
+      text-align:center;
     }
+    h1{margin:8px 0 6px;font-size:26px;text-shadow:0 0 10px rgba(0,255,0,0.08)}
+    .sub{font-size:13px;color:var(--neon-dim);margin-bottom:12px}
 
-    @keyframes glow {
-      0% { text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00; }
-      50% { text-shadow: 0 0 15px #00ff00, 0 0 25px #00ff00; }
-      100% { text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00; }
+    input[type=text], input[type=password]{
+      width:100%;padding:12px;border-radius:8px;border:none;background:#0e0e0e;color:var(--neon);
+      margin:8px 0;font-size:15px;
     }
+    button, .btn{
+      display:inline-block;padding:12px 14px;border-radius:8px;border:none;background:var(--neon);color:#000;font-weight:800;cursor:pointer;
+      transition:transform .12s ease, box-shadow .12s ease;
+    }
+    button.small{padding:8px 10px;font-size:14px}
+    button:hover, .btn:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,255,0,0.05)}
 
-    input, button {
-      width: 100%;
-      padding: 14px;
-      margin: 10px 0;
-      border-radius: 5px;
-      font-size: 16px;
+    .esganja{
+      display:inline-block;text-align:left;padding:8px 12px;border-radius:8px;background:linear-gradient(180deg, rgba(0,10,0,0.4), rgba(0,0,0,0.3));
+      border:1px solid rgba(0,255,0,0.08);margin-bottom:10px;
     }
+    pre.tag{margin:0;color:var(--neon-dim);font-weight:700;white-space:pre;line-height:1.05}
 
-    input {
-      border: none;
-      background: #111;
-      color: #00ff00;
-    }
+    .menu-decor{height:8px;margin:12px 0 8px;display:flex;gap:6px;justify-content:center;align-items:center}
+    .menu-decor .bar{width:40px;height:4px;border-radius:2px;background:linear-gradient(90deg,var(--neon),#00cc88);opacity:.12}
+    .menu-decor .dot{width:8px;height:8px;border-radius:50%;background:var(--neon)}
 
-    button {
-      border: none;
-      background-color: #00ff00;
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s;
+    .links{display:flex;gap:10px;justify-content:center;margin-top:12px}
+    .link-glow{
+      padding:10px 14px;border-radius:8px;text-decoration:none;color:#001200;font-weight:800;background:linear-gradient(90deg,#7bff7b,#00cc44);
+      box-shadow:0 8px 24px rgba(0,255,0,0.06);
     }
+    .link-simple{color:var(--neon-dim);text-decoration:none;font-size:14px}
 
-    button:hover {
-      background-color: #00cc00;
-    }
+    /* video overlay (full screen) */
+    .video-overlay{position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.96);opacity:0;pointer-events:none;transition:opacity .3s}
+    .video-overlay.show{opacity:1;pointer-events:all}
+    .video-overlay video{width:100%;height:100%;object-fit:cover}
 
-    .link-btn {
-      display: block;
-      margin-top: 15px;
-      color: #00ff00;
-      text-decoration: none;
-      font-weight: bold;
+    /* Psycho UI */
+    .psycho {
+      position:fixed;inset:0;z-index:9;display:none;align-items:center;justify-content:center;
+      background:#111 url('https://files.catbox.moe/7ppgt3.jpg') center/cover no-repeat;
     }
+    .psycho .panel{
+      width:90%;max-width:820px;background:rgba(0,0,0,0.72);border:1px solid rgba(255,0,0,0.06);padding:18px;border-radius:12px;text-align:center;color:#ffdede;
+      box-shadow:0 8px 40px rgba(255,0,0,0.04);
+    }
+    .psycho h2{color:#ffdede;margin:4px 0 12px;text-shadow:0 0 12px rgba(255,50,50,0.08)}
+    .psycho .top-row{display:flex;gap:12px;justify-content:center;align-items:center;margin-bottom:12px}
+    .btn-danger{background:var(--danger);color:#000;padding:12px;border-radius:10px;font-weight:900}
+    .grid{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 6px;
+    }
+    .grid .tile{background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.25));border:1px solid rgba(255,255,255,0.02);padding:14px;border-radius:10px;cursor:pointer}
+    .grid .tile:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(255,0,0,0.03)}
+    .bottom-links{display:flex;gap:12px;justify-content:center;margin-top:12px}
 
-    video#introVideo {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: 10;
-      display: none;
-    }
+    /* responsive */
+    @media(max-width:720px){ .grid{grid-template-columns:repeat(2,1fr)} .psycho .panel{padding:14px} }
+    @media(max-width:420px){ .grid{grid-template-columns:1fr} .card{padding:16px} }
   </style>
 </head>
 <body>
+  <!-- INTRO video (used after login) -->
+  <div id="introOverlay" class="video-overlay" aria-hidden="true">
+    <video id="introVideo" playsinline preload="auto" muted>
+      <source src="https://files.catbox.moe/ygad1n.mp4" type="video/mp4">
+      Video tidak didukung.
+    </video>
+  </div>
 
-  <video id="introVideo" src="https://files.catbox.moe/ygad1n.mp4"></video>
+  <!-- SWEEP video overlay (fullscreen) -->
+  <div id="sweepOverlay" class="video-overlay" aria-hidden="true">
+    <video id="sweepVideo" playsinline preload="auto" muted>
+      <source id="sweepSource" src="https://files.catbox.moe/i4ixzs.mp4" type="video/mp4">
+      Video tidak didukung.
+    </video>
+  </div>
 
-  <!-- LOGIN -->
-  <div class="container" id="loginContainer">
+  <!-- MAIN LOGIN / HOST / USER containers -->
+  <div id="loginCard" class="card" role="region" aria-label="Login">
+    <div class="esganja"><pre class="tag">╔═══◆═══◇═══◆═══╗
+║ Esganja92               ║
+║ Ryuu(19)🕷️ | OWNER ║
+╚═══◆═══◇═══◆═══╝</pre></div>
+
     <h1>Login Tools</h1>
-    <p><i>"Jika dia tak memilihmu maka pergilah kamu hanya menganggunya"<br>— RyuuSaid —</i></p>
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="checkLogin()">LOGIN</button>
+    <div class="menu-decor"><div class="bar"></div><div class="dot"></div><div class="bar"></div></div>
+    <div class="sub">"Jika dia tak memilihmu maka pergilah kamu hanya menganggunya" — RyuuSaid —</div>
+
+    <input id="inpUser" type="text" placeholder="Username">
+    <input id="inpPass" type="password" placeholder="Password">
+    <div style="display:flex;gap:10px">
+      <button id="btnLogin" class="btn" style="flex:1">LOGIN</button>
+    </div>
+
+    <div class="links">
+      <a class="link-glow" href="https://wa.me/62882006305047" target="_blank" rel="noopener">📲 Chat WA</a>
+      <a class="link-simple" href="https://www.tiktok.com/@ryunodev" target="_blank" rel="noopener">@ryunodev</a>
+    </div>
   </div>
 
-  <!-- HOST MODE -->
-  <div class="container" id="hostContainer" style="display:none;">
-    <h1>⚡ Shadow Crasher ⚡ (Host Mode)</h1>
-    <h2>EmperorRyuuReturns</h2>
-    <p><strong>Nomor Sender :</strong></p>
-    <input type="text" id="senderNumber" placeholder="Contoh: 62882006305047">
-    <p><strong>Nomor Target :</strong></p>
-    <input type="text" id="targetNumberHost" placeholder="Contoh: 6281234567890">
-    <button onclick="attackHost('Ultimate Crash')">Ultimate Crash</button>
-    <button onclick="attackHost('Crash Invisible')">Crash Invisible</button>
-    <button onclick="attackHost('Hard Delay Invisible')">Hard Delay Invisible</button>
-    <button onclick="attackHost('iOS Crash (Exp)')">iOS Crash (Exp)</button>
-    <button onclick="attackHost('Android UI Killer')">Android UI Killer</button>
-    <button onclick="sweepMode()">SWEEP MODE</button>
-    <button onclick="logout()">LOG OUT</button>
-    <a class="link-btn" href="https://wa.me/62882006305047" target="_blank">📞 WhatsApp</a>
-    <a class="link-btn" href="https://www.tiktok.com/@ryunodev" target="_blank">🎵 TikTok</a>
+  <!-- Host UI (default hidden until login) -->
+  <div id="hostCard" class="card" style="display:none" role="region" aria-label="Host Mode">
+    <div class="esganja"><pre class="tag">╔═══◆═══◇═══◆═══╗
+║ Esganja92               ║
+║ Ryuu(19)🕷️ | OWNER ║
+╚═══◆═══◇═══◆═══╝</pre></div>
+
+    <h1>⚡ Shadow Crasher ⚡ (Host)</h1>
+    <div class="sub">EmperorRyuuReturns</div>
+    <div style="text-align:left;margin:6px 0">
+      <strong>Nomor Sender :</strong>
+      <input id="senderNum" type="text" placeholder="Contoh: 62882006305047">
+      <strong>Nomor Target :</strong>
+      <input id="targetHost" type="text" placeholder="Contoh: 6281234567890">
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px">
+      <button class="small" onclick="demoAction('Ultimate Crash')">Ultimate Crash</button>
+      <button class="small" onclick="demoAction('Crash Invisible')">Crash Invisible</button>
+      <button class="small" onclick="demoAction('Hard Delay Invisible')">Hard Delay Invisible</button>
+      <button class="small" onclick="demoAction('iOS Crash (Exp)')">iOS Crash (Exp)</button>
+      <button class="small" onclick="demoAction('Android UI Killer')">Android UI Killer</button>
+    </div>
+
+    <div style="margin-top:14px;display:flex;gap:8px;justify-content:center;align-items:center">
+      <button id="btnSweep" class="btn small" title="Sweep Mode (Host only)">Sweep Mode 🕷️☠️</button>
+      <button onclick="logout()" class="btn small" style="background:var(--danger);color:#000">LOG OUT</button>
+    </div>
+
+    <div class="links" style="margin-top:14px">
+      <a class="link-glow" href="https://wa.me/62882006305047" target="_blank" rel="noopener">📲 Hubungi Owner</a>
+      <a class="link-simple" href="https://www.tiktok.com/@ryunodev" target="_blank" rel="noopener">@ryunodev</a>
+    </div>
   </div>
 
-  <!-- USER MODE -->
-  <div class="container" id="userContainer" style="display:none;">
-    <h1>⚡ Shadow Crasher ⚡ (User Mode)</h1>
-    <h2>EmperorRyuuReturns</h2>
-    <p><strong>Nomor Target :</strong></p>
-    <input type="text" id="targetNumberUser" placeholder="Contoh: 6281234567890">
-    <button onclick="attackUser('Ultimate Crash')">Ultimate Crash</button>
-    <button onclick="attackUser('Crash Invisible')">Crash Invisible</button>
-    <button onclick="attackUser('Hard Delay Invisible')">Hard Delay Invisible</button>
-    <button onclick="attackUser('iOS Crash (Exp)')">iOS Crash (Exp)</button>
-    <button onclick="attackUser('Android UI Killer')">Android UI Killer</button>
-    <button onclick="logout()">LOG OUT</button>
-    <a class="link-btn" href="https://wa.me/62882006305047" target="_blank">📞 WhatsApp</a>
-    <a class="link-btn" href="https://www.tiktok.com/@ryunodev" target="_blank">🎵 TikTok</a>
+  <!-- User UI -->
+  <div id="userCard" class="card" style="display:none" role="region" aria-label="User Mode">
+    <div class="esganja"><pre class="tag">╔═══◆═══◇═══◆═══╗
+║ Esganja92               ║
+║ Ryuu(19)🕷️ | OWNER ║
+╚═══◆═══◇═══◆═══╝</pre></div>
+
+    <h1>⚡ Shadow Crasher ⚡ (User)</h1>
+    <div class="sub">EmperorRyuuReturns</div>
+
+    <div style="text-align:left;margin:6px 0">
+      <strong>Nomor Target :</strong>
+      <input id="targetUser" type="text" placeholder="Contoh: 6281234567890">
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px">
+      <button class="small" onclick="demoAction('Ultimate Crash')">Ultimate Crash</button>
+      <button class="small" onclick="demoAction('Crash Invisible')">Crash Invisible</button>
+      <button class="small" onclick="demoAction('Hard Delay Invisible')">Hard Delay Invisible</button>
+      <button class="small" onclick="demoAction('iOS Crash (Exp)')">iOS Crash (Exp)</button>
+      <button class="small" onclick="demoAction('Android UI Killer')">Android UI Killer</button>
+    </div>
+
+    <div style="margin-top:14px">
+      <button onclick="logout()" class="btn small" style="background:var(--danger);color:#000">LOG OUT</button>
+    </div>
+
+    <div class="links" style="margin-top:12px">
+      <a class="link-glow" href="https://wa.me/62882006305047" target="_blank" rel="noopener">📲 Hubungi Owner</a>
+      <a class="link-simple" href="https://www.tiktok.com/@ryunodev" target="_blank" rel="noopener">@ryunodev</a>
+    </div>
   </div>
 
+  <!-- PSYCHO444 UI (appears after sweep video ends) -->
+  <div id="psychoUI" class="psycho" role="region" aria-label="Psycho444 UI">
+    <div class="panel">
+      <div class="top-row">
+        <button id="btnSweepReturn" class="small">Sweep Mode Return 🔁</button>
+        <button id="btnPsyLogout" class="btn-danger">Log Out 🔴</button>
+      </div>
+
+      <h2>⚔️ PSYCHO444 — ACTIVE</h2>
+
+      <div class="grid" id="psyGrid">
+        <div class="tile" onclick="psyAction('The Dark Blade')">The Dark Blade</div>
+        <div class="tile" onclick="psyAction('HollowSrike')">HollowSrike</div>
+        <div class="tile" onclick="psyAction('TenEyes')">TenEyes</div>
+        <div class="tile" onclick="psyAction('Gencart')">Gencart</div>
+        <div class="tile" onclick="psyAction('Sixpant')">Sixpant</div>
+        <div class="tile" onclick="psyAction('MalyenCrash')">MalyenCrash</div>
+      </div>
+
+      <div class="bottom-links">
+        <a class="link-glow" href="https://wa.me/62882006305047" target="_blank" rel="noopener">📲 WA</a>
+        <a class="link-simple" href="https://www.tiktok.com/@ryunodev" target="_blank" rel="noopener">🎵 TikTok</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- sound effect (kept but video has sound too) -->
   <audio id="effectSound" src="https://files.catbox.moe/ophu1v.m4a"></audio>
 
   <script>
-    function checkLogin() {
-      const user = document.getElementById('username').value.trim();
-      const pass = document.getElementById('password').value.trim();
+    // CONFIG
+    const HOST_USER = 'RyuuHost';
+    const HOST_PW = 'Crasher444';
+    const USER_NAME = 'UserNi';
+    const USER_PW = 'Ry444';
 
-      if ((user === 'RyuuHost' && pass === 'Crasher444') || (user === 'UserNi' && pass === 'Ry444')) {
+    // ELEMENTS
+    const loginCard = document.getElementById('loginCard');
+    const hostCard = document.getElementById('hostCard');
+    const userCard = document.getElementById('userCard');
+    const psychoUI = document.getElementById('psychoUI');
+
+    const inpUser = document.getElementById('inpUser');
+    const inpPass = document.getElementById('inpPass');
+    const btnLogin = document.getElementById('btnLogin');
+
+    const introOverlay = document.getElementById('introOverlay');
+    const introVideo = document.getElementById('introVideo');
+
+    const sweepOverlay = document.getElementById('sweepOverlay');
+    const sweepVideo = document.getElementById('sweepVideo');
+    const sweepSource = document.getElementById('sweepSource');
+
+    const btnSweep = document.getElementById('btnSweep');
+    const btnSweepReturn = document.getElementById('btnSweepReturn');
+    const btnPsyLogout = document.getElementById('btnPsyLogout');
+
+    // state
+    let mode = 'shadow'; // 'shadow' or 'psycho'
+    let currentRole = null; // 'host' or 'user'
+    let currentUserName = null;
+
+    // helper show/hide
+    function show(el){ el.style.display = (el === psychoUI ? 'flex' : 'block'); }
+    function hide(el){ el.style.display = 'none'; }
+
+    // safe demo actions
+    function demoAction(name){
+      alert('(DEMO) Action: ' + name);
+      try { document.getElementById('effectSound').play().catch(()=>{}); } catch(e){}
+    }
+
+    // Psycho action buttons
+    function psyAction(name){
+      alert('(PSYCHO) ' + name + ' (DEMO)');
+      try { document.getElementById('effectSound').play().catch(()=>{}); } catch(e){}
+    }
+
+    // LOGIN
+    btnLogin.addEventListener('click', () => {
+      const u = inpUser.value.trim();
+      const p = inpPass.value.trim();
+      if(!u || !p){ alert('Isi Username & Password dulu!'); return; }
+
+      if(u === HOST_USER && p === HOST_PW){
+        currentRole = 'host'; currentUserName = u;
+        // play intro and show host
         playIntro(() => {
-          document.getElementById('loginContainer').style.display = 'none';
-          if (user === 'RyuuHost') document.getElementById('hostContainer').style.display = 'block';
-          else document.getElementById('userContainer').style.display = 'block';
+          hide(loginCard); show(hostCard);
+        });
+      } else if(u === USER_NAME && p === USER_PW){
+        currentRole = 'user'; currentUserName = u;
+        playIntro(() => {
+          hide(loginCard); show(userCard);
         });
       } else {
         alert('Username atau Password salah!');
       }
-    }
+    });
 
-    function playIntro(callback) {
-      const video = document.getElementById('introVideo');
-      video.style.display = 'block';
-      video.volume = 1.0;
-      video.play();
-      video.onended = () => {
-        video.style.display = 'none';
+    // Intro play (after login click) - play video with sound if possible
+    function playIntro(callback){
+      try { introVideo.currentTime = 0; } catch(e){}
+      introOverlay.classList.add('show'); introOverlay.setAttribute('aria-hidden','false');
+      // allow sound because login click is a gesture
+      introVideo.muted = false;
+      const p = introVideo.play();
+      if(p && p.catch){
+        p.catch(err => {
+          // fallback to muted play then unmute shortly
+          introVideo.muted = true;
+          introVideo.play().catch(()=>{});
+          setTimeout(()=> introVideo.muted = false, 300);
+        });
+      }
+      const onEnd = () => {
+        introVideo.removeEventListener('ended', onEnd);
+        introOverlay.classList.remove('show'); introOverlay.setAttribute('aria-hidden','true');
         callback();
       };
+      introVideo.addEventListener('ended', onEnd);
+
+      // safety fallback 4s
+      setTimeout(()=> {
+        if(introOverlay.classList.contains('show')){
+          introVideo.removeEventListener('ended', onEnd);
+          introOverlay.classList.remove('show'); introOverlay.setAttribute('aria-hidden','true');
+          callback();
+        }
+      }, 4000);
     }
 
-    function attackHost(action) {
-      const sender = document.getElementById('senderNumber').value.trim();
-      const target = document.getElementById('targetNumberHost').value.trim();
-      if (!sender || !target) return alert('Isi semua kolom terlebih dahulu!');
-      alert(`Mengirim dari: ${sender}\nMenyerang nomor: ${target}\nMenggunakan: ${action}`);
-      document.getElementById('effectSound').play();
+    // SWEEP (only host)
+    btnSweep.addEventListener('click', () => {
+      if(currentRole !== 'host'){ alert('Sweep Mode hanya untuk Host'); return; }
+      startSweepSequence();
+    });
+
+    function startSweepSequence(){
+      // play sweep video fullscreen with sound
+      try { sweepVideo.currentTime = 0; } catch(e){}
+      sweepOverlay.classList.add('show'); sweepOverlay.setAttribute('aria-hidden','false');
+
+      // ensure the sweep video source is set (already in HTML), but you can change sweepSource.src dynamically
+      sweepVideo.muted = false;
+      const p = sweepVideo.play();
+      if(p && p.catch){
+        p.catch(err => {
+          sweepVideo.muted = true;
+          sweepVideo.play().catch(()=>{});
+          setTimeout(()=> sweepVideo.muted = false, 350);
+        });
+      }
+
+      // when video ends -> go to Psycho UI
+      const onEnd = () => {
+        sweepVideo.removeEventListener('ended', onEnd);
+        sweepOverlay.classList.remove('show'); sweepOverlay.setAttribute('aria-hidden','true');
+        enterPsychoUI();
+      };
+      sweepVideo.addEventListener('ended', onEnd);
+
+      // fallback timeout
+      setTimeout(()=> {
+        if(sweepOverlay.classList.contains('show')){
+          sweepOverlay.classList.remove('show'); sweepOverlay.setAttribute('aria-hidden','true');
+          enterPsychoUI();
+        }
+      }, 9000);
     }
 
-    function attackUser(action) {
-      const target = document.getElementById('targetNumberUser').value.trim();
-      if (!target) return alert('Isi nomor target dulu!');
-      alert(`Menyerang nomor: ${target}\nMenggunakan: ${action}`);
-      document.getElementById('effectSound').play();
+    // ENTER PSYCHO UI
+    function enterPsychoUI(){
+      mode = 'psycho';
+      // hide other UI
+      hide(hostCard); hide(userCard); hide(loginCard);
+      // show psycho
+      show(psychoUI);
+      // scroll to top if needed
+      window.scrollTo(0,0);
     }
 
-    function sweepMode() {
-      const videoUrl = "https://v16m-default.tiktokcdn-us.com/7f7dc9b45d4a4931ae5cce8d0d1bfa44/"; // contoh placeholder
-      const video = document.getElementById('introVideo');
-      video.src = "https://vt.tiktok.com/ZSy1CNVfQ/";
-      video.style.display = 'block';
-      video.play();
-      setTimeout(() => {
-        video.style.display = 'none';
-        alert('Mode Psycho444 aktif: The Dark Blade, ShineeBluee, Hollow Crash, Ten Eyes');
-      }, 6000);
+    // Sweep Return (top-left) -> back to Shadow host UI
+    btnSweepReturn.addEventListener('click', () => {
+      exitPsychoUI();
+      // return to host UI (if host logged in), else login
+      if(currentRole === 'host'){ show(hostCard); } else { show(loginCard); }
+      mode = 'shadow';
+    });
+
+    function exitPsychoUI(){
+      psychoUI.style.display = 'none';
+      // restore background to original (body background already set)
+      // simply hide psycho overlay
+      mode = 'shadow';
     }
 
-    function logout() {
-      document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
-      document.getElementById('loginContainer').style.display = 'block';
-      document.getElementById('introVideo').style.display = 'none';
-      document.getElementById('username').value = '';
-      document.getElementById('password').value = '';
+    // Psycho logout (red)
+    btnPsyLogout.addEventListener('click', () => {
+      // perform logout
+      psychoUI.style.display = 'none';
+      logout();
+    });
+
+    // LOGOUT
+    function logout(){
+      // reset role & UI
+      currentRole = null; currentUserName = null;
+      // hide all
+      hide(hostCard); hide(userCard); hide(psychoUI);
+      // show login
+      show(loginCard);
+      // reset inputs
+      inpUser.value = ''; inpPass.value = '';
     }
+
+    // allow Enter to login
+    inpPass.addEventListener('keydown', (e) => { if(e.key === 'Enter') btnLogin.click(); });
+    inpUser.addEventListener('keydown', (e) => { if(e.key === 'Enter') btnLogin.click(); });
+
+    // initial: ensure overlay hidden
+    window.addEventListener('load', () => {
+      introOverlay.classList.remove('show'); sweepOverlay.classList.remove('show');
+      psychoUI.style.display = 'none';
+      hostCard.style.display = 'none';
+      userCard.style.display = 'none';
+    });
   </script>
 </body>
   </html>
