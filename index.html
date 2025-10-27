@@ -1,186 +1,446 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Void AI System</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shadow Crasher — Demo (no-AI)</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Courier New', monospace;
+    :root{
+      --neon:#00ff00;
+      --neon-dim:#9fffbf;
+      --bg-alpha:0.88;
+      --accent: rgba(0,255,0,0.08);
     }
-
-    body {
-      background: url('https://wallpapercave.com/wp/wp7440208.gif') center/cover no-repeat fixed;
-      color: #00ffea;
-      height: 100vh;
-      overflow: hidden;
+    html,body{height:100%;margin:0;font-family:'Courier New',monospace;background:#000;color:var(--neon)}
+    body{
+      background-image:url('https://files.catbox.moe/6c41es.jpg');
+      background-size:cover;background-position:center;background-attachment:fixed;
+      display:flex;align-items:center;justify-content:center;overflow:hidden;
     }
-
-    .overlay {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(5px);
+    body::before{
+      content:"";position:fixed;inset:0;pointer-events:none;
+      background-image:radial-gradient(var(--neon) 1px, transparent 1px);
+      background-size:50px 50px;animation:moveStars 60s linear infinite;opacity:0.18;z-index:0;
     }
+    @keyframes moveStars{from{background-position:0 0}to{background-position:1000px 1000px}}
 
-    .terminal {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 90%;
-      max-width: 600px;
-      background: rgba(0, 0, 0, 0.85);
-      border: 1px solid #00ffea;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 0 20px #00ffee;
-      overflow-y: auto;
-      height: 70%;
-    }
+    .container{position:relative;z-index:2;background:rgba(0,0,0,var(--bg-alpha));padding:22px;border-radius:10px;box-shadow:0 0 20px rgba(0,255,0,0.06);width:95%;max-width:560px;text-align:center}
+    h1{font-size:26px;margin:6px 0 10px;text-shadow:0 0 8px var(--neon)}
+    input{width:100%;padding:12px;margin:10px 0;border:none;border-radius:6px;background:#0f0f0f;color:var(--neon);font-size:15px}
+    button{padding:12px;border:none;border-radius:6px;background:var(--neon);color:#000;font-weight:800;cursor:pointer}
+    button.small{padding:8px 10px;font-size:13px}
+    .esganja-tag{display:inline-block;background:linear-gradient(180deg,rgba(0,20,0,0.6),rgba(0,0,0,0.6));padding:10px 12px;border-radius:8px;border:1px solid rgba(0,255,0,0.12);margin-bottom:10px;text-align:left}
+    .tag-text{font-weight:700;color:var(--neon-dim);white-space:pre;line-height:1.05}
+    .quote{margin-top:10px;font-style:italic;color:var(--neon-dim);font-size:13px;border-left:3px solid rgba(0,255,0,0.25);padding-left:10px;text-align:left}
+    .emperor{margin-top:8px;font-weight:900;color:#c4ffd1;letter-spacing:1px;font-size:13px;text-transform:uppercase;border:1px dashed var(--accent);padding:6px 10px;border-radius:6px;display:inline-block}
+    .menu-decor{height:8px;margin:10px 0 6px;display:flex;gap:6px;justify-content:center;align-items:center}
+    .menu-decor .bar{width:40px;height:4px;border-radius:2px;background:linear-gradient(90deg,var(--neon),#00cc88);opacity:.12}
+    .menu-decor .dot{width:8px;height:8px;border-radius:50%;background:var(--neon)}
+    .sep{height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:10px 0;border-radius:2px}
 
-    .line {
-      color: #00ffea;
-      margin: 5px 0;
-      font-size: 14px;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
+    /* video overlay full */
+    .video-overlay{position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.95);opacity:0;pointer-events:none;transition:opacity .35s}
+    .video-overlay.show{opacity:1;pointer-events:all}
+    .video-frame{width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .video-frame video{width:100%;height:100%;object-fit:cover}
 
-    .input-line {
-      display: flex;
-      margin-top: 10px;
-    }
+    /* chat box */
+    .chat-box{position:fixed;left:12px;bottom:12px;background:rgba(0,0,0,0.75);border:1px solid rgba(0,255,0,0.06);padding:10px;border-radius:8px;width:320px;z-index:10}
+    .chat-messages{height:180px;overflow:auto;padding:8px;background:rgba(0,0,0,0.55);border-radius:6px;margin-bottom:8px;color:var(--neon-dim);font-size:13px}
+    .chat-row{display:flex;gap:8px}
+    .chat-row input{flex:1;padding:8px;border-radius:6px;border:none;background:#0d0d0d;color:var(--neon)}
+    .chat-row button{padding:8px 10px;border-radius:6px;border:none;background:var(--neon);color:#000}
+    .chat-controls{display:flex;gap:8px;margin-top:6px;justify-content:center}
+    .hidden{display:none}
 
-    .prefix {
-      color: #00ffaa;
-      margin-right: 5px;
-    }
+    /* host container adjustments */
+    .host-controls{margin-top:10px;text-align:left}
 
-    input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: #fff;
-      font-size: 14px;
-    }
-
-    .scan {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: repeating-linear-gradient(
-        to bottom,
-        rgba(0, 255, 255, 0.1) 0px,
-        rgba(0, 255, 255, 0.1) 1px,
-        transparent 2px,
-        transparent 4px
-      );
-      animation: scan 5s linear infinite;
-      pointer-events: none;
-    }
-
-    @keyframes scan {
-      0% { background-position-y: 0; }
-      100% { background-position-y: 100vh; }
-    }
-
-    .title {
-      position: absolute;
-      top: 15px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 20px;
-      text-shadow: 0 0 10px cyan;
-      font-weight: bold;
-      color: cyan;
+    /* responsive */
+    @media(max-width:420px){
+      .chat-box{width:88%}
+      .container{padding:16px}
     }
   </style>
 </head>
 <body>
-  <div class="overlay"></div>
-  <div class="title">VOID AI SYSTEM v1.3</div>
-  <div class="scan"></div>
-
-  <div class="terminal" id="terminal">
-    <div class="line">Initializing Void system...</div>
-    <div class="line">Loading AI Core [████████████████████] 100%</div>
-    <div class="line">Type <span style="color:#00ffaa;">help</span> to view commands.</div>
+  <!-- video overlays -->
+  <div id="introOverlay" class="video-overlay" aria-hidden="true">
+    <div class="video-frame"><video id="introVideo" playsinline preload="auto" muted><source src="https://files.catbox.moe/ygad1n.mp4" type="video/mp4"></video></div>
   </div>
 
-  <div class="input-line">
-    <div class="prefix">root@voidAI:~$</div>
-    <input id="commandInput" type="text" autofocus autocomplete="off" />
+  <div id="sweepOverlay" class="video-overlay" aria-hidden="true">
+    <div class="video-frame"><video id="sweepVideo" playsinline preload="auto" muted><source id="sweepSource" src="https://files.catbox.moe/ygad1n.mp4" type="video/mp4"></video></div>
   </div>
+
+  <!-- main container (login) -->
+  <div class="container" id="loginContainer" role="region" aria-label="Login">
+    <div class="esganja-tag" aria-hidden="true"><pre class="tag-text">╔═══◆═══◇═══◆═══╗
+║ Esganja92               ║
+║ Ryuu(19)🕷️ | OWNER ║
+╚═══◆═══◇═══◆═══╝</pre></div>
+
+    <h1>Login Tools</h1>
+    <div class="menu-decor" aria-hidden="true"><div class="bar"></div><div class="dot"></div><div class="bar"></div></div>
+
+    <div class="quote" aria-hidden="true">"jika dia tak memilihmu maka  pergilah kamu hanya menganggunya"
+      <span style="display:block;margin-top:6px;font-weight:700">—RyuuSaid—</span>
+    </div>
+
+    <input id="username" placeholder="Username" autocomplete="off" />
+    <input id="password" placeholder="Password" type="password" autocomplete="off" />
+    <button id="loginBtn">LOGIN</button>
+
+    <a class="chat-link" href="https://wa.me/62882006305047" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:10px;padding:8px 10px;border-radius:6px;background:linear-gradient(90deg,rgba(0,255,0,0.95),rgba(0,200,0,0.9));color:#001200;font-weight:800;text-decoration:none">📲 Chat Ryuu via WA — 62882006305047</a>
+    <a class="chat-link" href="https://www.tiktok.com/@ryunodev" target="_blank" rel="noopener noreferrer" style="display:block;margin-top:8px;color:var(--neon-dim);text-decoration:none">@ryunodev — TikTok</a>
+
+    <p style="margin-top:8px;font-size:12px;opacity:.7;text-align:left;">Website: <a id="siteLink" href="https://ryuutempest444.github.io/ShadowCrasher-By-RyuuTempestV1/" target="_blank" style="color:var(--neon-dim);text-decoration:none;">ryuutempest444.github.io/ShadowCrasher-By-RyuuTempestV1</a></p>
+  </div>
+
+  <!-- host container -->
+  <div class="container hidden" id="hostContainer" role="region" aria-label="Host Mode">
+    <div class="esganja-tag" aria-hidden="true"><pre class="tag-text">╔═══◆═══◇═══◆═══╗
+║ Esganja92               ║
+║ Ryuu(19)🕷️ | OWNER ║
+╚═══◆═══◇═══◆═══╝</pre></div>
+
+    <h1>⚡ Shadow Crasher ⚡ (Host Mode)</h1>
+    <div class="menu-decor"><div class="bar"></div><div class="dot"></div><div class="bar"></div></div>
+    <div class="emperor">EmperorRyuuReturns</div>
+    <div class="sep"></div>
+
+    <p><strong>Nomor Sender :</strong></p>
+    <input id="senderNumber" placeholder="Contoh: 62882006305047" />
+    <p><strong>Nomor Target :</strong></p>
+    <input id="targetNumberHost" placeholder="Contoh: 6281234567890" />
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+      <button onclick="demoAction('Ultimate Crash')">Ultimate Crash</button>
+      <button onclick="demoAction('Crash Invisible')">Crash Invisible</button>
+      <button onclick="demoAction('Hard Delay Invisible')">Hard Delay Invisible</button>
+      <button onclick="demoAction('iOS Crash (Exp)')">iOS Crash (Exp)</button>
+      <button onclick="demoAction('Android UI Killer')">Android UI Killer</button>
+    </div>
+
+    <div class="host-controls">
+      <div style="margin-top:10px;font-weight:700">Sweep Mode (Host)</div>
+      <div style="margin-top:8px">
+        <button class="small" id="btnRunSweep" onclick="startSweepHost()">RUN SWEEP</button>
+        <button class="small" onclick="returnToShadow()">Return to Shadow</button>
+      </div>
+      <div style="margin-top:8px" class="sep"></div>
+      <div style="margin-top:8px;">
+        <a class="chat-link" href="https://wa.me/62882006305047" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:8px 10px;border-radius:6px;background:linear-gradient(90deg,rgba(0,255,0,0.95),rgba(0,200,0,0.9));color:#001200;font-weight:800;text-decoration:none">📲 Hubungi Owner — 62882006305047</a>
+        <a class="chat-link" href="https://www.tiktok.com/@ryunodev" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-left:8px;color:var(--neon-dim);text-decoration:none">@ryunodev — TikTok</a>
+      </div>
+
+    </div>
+
+    <div style="margin-top:10px;text-align:center">
+      <button onclick="logout()" style="background:#ff6666;color:#000;padding:10px 14px;border-radius:8px;border:none">LOG OUT</button>
+    </div>
+  </div>
+
+  <!-- user container -->
+  <div class="container hidden" id="userContainer" role="region" aria-label="User Mode">
+    <div class="esganja-tag" aria-hidden="true"><pre class="tag-text">╔═══◆═══◇═══◆═══╗
+║ Esganja92               ║
+║ Ryuu(19)🕷️ | OWNER ║
+╚═══◆═══◇═══◆═══╝</pre></div>
+
+    <h1>⚡ Shadow Crasher ⚡ (User Mode)</h1>
+    <div class="menu-decor"><div class="bar"></div><div class="dot"></div><div class="bar"></div></div>
+    <div class="emperor">EmperorRyuuReturns</div>
+    <div class="sep"></div>
+
+    <p><strong>Nomor Target :</strong></p>
+    <input id="targetNumberUser" placeholder="Contoh: 6281234567890" />
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+      <button onclick="demoAction('Ultimate Crash')">Ultimate Crash</button>
+      <button onclick="demoAction('Crash Invisible')">Crash Invisible</button>
+      <button onclick="demoAction('Hard Delay Invisible')">Hard Delay Invisible</button>
+      <button onclick="demoAction('iOS Crash (Exp)')">iOS Crash (Exp)</button>
+      <button onclick="demoAction('Android UI Killer')">Android UI Killer</button>
+    </div>
+
+    <div style="margin-top:12px">
+      <a class="chat-link" href="https://wa.me/62882006305047" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:8px 10px;border-radius:6px;background:linear-gradient(90deg,rgba(0,255,0,0.95),rgba(0,200,0,0.9));color:#001200;font-weight:800;text-decoration:none">📲 Hubungi Owner — 62882006305047</a>
+      <a class="chat-link" href="https://www.tiktok.com/@ryunodev" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-left:8px;color:var(--neon-dim);text-decoration:none">@ryunodev — TikTok</a>
+    </div>
+
+    <div style="margin-top:10px;text-align:center">
+      <button onclick="logout()" style="background:#ff6666;color:#000;padding:10px 14px;border-radius:8px;border:none">LOG OUT</button>
+    </div>
+  </div>
+
+  <!-- chat box -->
+  <div class="chat-box" id="chatBox" role="region" aria-label="Chat">
+    <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
+    <div class="chat-row">
+      <input id="chatInput" placeholder="Ketik pesan..." autocomplete="off" />
+      <button id="sendChatBtn">Kirim</button>
+    </div>
+    <div class="chat-controls">
+      <button id="toggleChatBtn" class="small">Sembunyikan</button>
+      <button id="clearChatBtn" class="small">Hapus Chat</button>
+    </div>
+  </div>
+
+  <audio id="effectSound" src="https://files.catbox.moe/ophu1v.m4a"></audio>
 
   <script>
-    const terminal = document.getElementById('terminal');
-    const input = document.getElementById('commandInput');
+    /* ---------- CONFIG ---------- */
+    const SITE_URL = 'https://ryuutempest444.github.io/ShadowCrasher-By-RyuuTempestV1/';
+    const MASTER_USER = 'RyuuHost';
+    const MASTER_PW = 'Crasher444';
+    const USER_NAME = 'UserNi';
+    const USER_PW = 'Ry444';
 
-    const commands = {
-      help: `
-<b>Available commands:</b><br>
-- <span style="color:#00ffaa;">help</span> : show available commands<br>
-- <span style="color:#00ffaa;">about</span> : about this AI system<br>
-- <span style="color:#00ffaa;">sweep</span> : start data sweep simulation<br>
-- <span style="color:#00ffaa;">clear</span> : clear the terminal<br>
-- <span style="color:#00ffaa;">exit</span> : shutdown system
-      `,
-      about: `Void AI System v1.3 — created by Ryuu Tempest.
-A minimal hacking-style interface built for fun simulation and interaction.`,
-    };
+    // If you have a different sweep video, replace below URL (must be direct .mp4)
+    const SWEEP_VIDEO_URL = 'https://files.catbox.moe/ygad1n.mp4'; // change to new .mp4 when ready
 
-    function addLine(text, type = 'normal') {
-      const div = document.createElement('div');
-      div.classList.add('line');
-      div.innerHTML = text;
-      terminal.appendChild(div);
-      terminal.scrollTop = terminal.scrollHeight;
-    }
+    /* ---------- ELEMENTS ---------- */
+    const loginContainer = document.getElementById('loginContainer');
+    const hostContainer = document.getElementById('hostContainer');
+    const userContainer = document.getElementById('userContainer');
+    const loginBtn = document.getElementById('loginBtn');
+    const usernameEl = document.getElementById('username');
+    const passwordEl = document.getElementById('password');
+    const introOverlay = document.getElementById('introOverlay');
+    const introVideo = document.getElementById('introVideo');
+    const sweepOverlay = document.getElementById('sweepOverlay');
+    const sweepVideo = document.getElementById('sweepVideo');
+    const sweepSource = document.getElementById('sweepSource');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const sendChatBtn = document.getElementById('sendChatBtn');
+    const toggleChatBtn = document.getElementById('toggleChatBtn');
+    const clearChatBtn = document.getElementById('clearChatBtn');
+    const siteLink = document.getElementById('siteLink');
 
-    function processCommand(cmd) {
-      const lower = cmd.toLowerCase();
+    // UI setup
+    siteLink.textContent = SITE_URL;
+    introVideo.preload = 'auto';
+    sweepVideo.preload = 'auto';
 
-      if (lower === 'help') addLine(commands.help);
-      else if (lower === 'about') addLine(commands.about);
-      else if (lower === 'clear') terminal.innerHTML = '';
-      else if (lower === 'exit') {
-        addLine('Shutting down system...');
-        setTimeout(() => { window.close(); }, 1000);
+    /* ---------- STATE ---------- */
+    let currentUser = null; // 'host' or 'user'
+    let currentUserName = null; // username string
+
+    /* ---------- HELPERS ---------- */
+    function show(el){ el.classList.remove('hidden'); }
+    function hide(el){ el.classList.add('hidden'); }
+    function addChatLine(text, opts = {}) {
+      // opts: {privateForHost: true/false, from: 'Host'|'User'}
+      // if privateForHost and current viewer is not host -> skip append
+      const line = document.createElement('div');
+      line.style.marginBottom = '6px';
+      line.style.fontSize = '13px';
+      if(opts.privateForHost){
+        line.dataset.privateHost = '1';
+        line.innerHTML = `<span style="color:#ff8888">[HOST-ONLY]</span> <span style="color:${opts.color||'var(--neon-dim)'}">${opts.from||'Host'}:</span> ${escapeHtml(text)}`;
+      } else {
+        line.innerHTML = `<span style="color:${opts.color||'var(--neon-dim)'}">${opts.from||'User'}:</span> ${escapeHtml(text)}`;
       }
-      else if (lower === 'sweep') {
-        addLine('Initializing data sweep...');
-        simulateSweep();
-      }
-      else addLine(`<span style="color:red;">Command not found:</span> ${cmd}`);
+      chatMessages.appendChild(line);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
     }
+    function escapeHtml(s){ return String(s).replace(/[&<>"']/g, (m)=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]) ); }
 
-    function simulateSweep() {
-      let i = 0;
-      const interval = setInterval(() => {
-        addLine(`⟿ Scanning node ${i + 1} :: status [OK]`);
-        i++;
-        if (i === 10) {
-          clearInterval(interval);
-          addLine('Data sweep complete ✅');
+    /* ---------- LOGIN & INTRO ---------- */
+    async function showIntroAndEnter(mode){
+      // hide login UI
+      loginContainer.classList.add('hidden');
+      // show overlay and play intro video with sound (user clicked button => gesture allowed)
+      introOverlay.classList.add('show');
+      introOverlay.setAttribute('aria-hidden','false');
+      try { introVideo.currentTime = 0; } catch(e){}
+      introVideo.muted = false;
+      const p = introVideo.play();
+      if(p && p.catch) {
+        p.catch(err => {
+          introVideo.muted = true;
+          introVideo.play().catch(()=>{});
+          setTimeout(()=> introVideo.muted = false, 300);
+        });
+      }
+      // after video ends -> show proper container
+      const onEnd = () => {
+        introVideo.removeEventListener('ended', onEnd);
+        introOverlay.classList.remove('show');
+        introOverlay.setAttribute('aria-hidden','true');
+        if(mode==='host'){ show(hostContainer); currentUser='host'; }
+        else { show(userContainer); currentUser='user'; }
+      };
+      introVideo.addEventListener('ended', onEnd);
+
+      // safety fallback if video stuck - proceed after 4s
+      setTimeout(()=> {
+        if(introOverlay.classList.contains('show')){
+          introVideo.removeEventListener('ended', onEnd);
+          introOverlay.classList.remove('show');
+          introOverlay.setAttribute('aria-hidden','true');
+          if(mode==='host'){ show(hostContainer); currentUser='host'; }
+          else { show(userContainer); currentUser='user'; }
         }
-      }, 400);
+      }, 4000);
     }
 
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && input.value.trim() !== '') {
-        addLine(`<span style="color:#00ffaa;">root@voidAI:~$</span> ${input.value}`);
-        processCommand(input.value.trim());
-        input.value = '';
+    function checkLogin(){
+      const u = usernameEl.value.trim();
+      const p = passwordEl.value.trim();
+      if(!u || !p){ alert('Isi Username & Password dulu!'); return; }
+      if(u === MASTER_USER && p === MASTER_PW){
+        currentUserName = u;
+        sessionStorage.setItem('sc_user', u);
+        showIntroAndEnter('host');
+      } else if(u === USER_NAME && p === USER_PW){
+        currentUserName = u;
+        sessionStorage.setItem('sc_user', u);
+        showIntroAndEnter('user');
+      } else {
+        alert('Username atau Password salah!');
+      }
+    }
+    loginBtn.addEventListener('click', checkLogin);
+
+    /* ---------- CHAT ---------- */
+    function sendChat(){
+      const txt = chatInput.value.trim();
+      if(!txt) return;
+      chatInput.value = '';
+      // host-private format: Host;"message" or Host;"m"
+      // also support =Host;... older format - accept both that start with Host;" or =Host;
+      const isPrivateHost = (/^(Host;|=Host;)/i).test(txt) || (/^Host;".+"$/i).test(txt) || (/^Host;".*"/i).test(txt);
+      // If message starts with Host;" then extract after that
+      if(/^Host;"/i.test(txt)){
+        // Host;"message"
+        if(currentUserName === MASTER_USER){
+          const m = txt.replace(/^Host;"/i,'').replace(/"$/,'');
+          addChatLine(m, {privateForHost:true, from: 'Host', color:'#ffaaaa'});
+        } else {
+          // non-host trying Host;" - ignore / treat as normal
+          addChatLine(txt, {from: currentUserName || 'Guest'});
+        }
+        return;
+      }
+      // =Host; legacy pattern -> only show to host
+      if(/^=Host;/i.test(txt)){
+        const m = txt.replace(/^=Host;/i,'');
+        if(currentUserName === MASTER_USER){
+          addChatLine(m, {privateForHost:true, from:'Host', color:'#ffaaaa'});
+        }
+        return;
+      }
+      // normal broadcast
+      addChatLine(txt, {from: currentUserName || 'Guest'});
+    }
+
+    sendChatBtn.addEventListener('click', sendChat);
+    chatInput.addEventListener('keydown', (e) => { if(e.key==='Enter') sendChat(); });
+
+    toggleChatBtn.addEventListener('click', () => { document.getElementById('chatBox').classList.toggle('hidden'); toggleChatBtn.textContent = document.getElementById('chatBox').classList.contains('hidden') ? 'Tampilkan' : 'Sembunyikan'; });
+    clearChatBtn.addEventListener('click', ()=> { if(confirm('Hapus semua chat?')) chatMessages.innerHTML=''; });
+
+    /* ---------- DEMO ACTION (safe) ---------- */
+    function demoAction(name){
+      alert(`(DEMO) Action: ${name}`);
+      try { effectSound.play().catch(()=>{}); } catch(e){}
+    }
+
+    /* ---------- SWEEP MODE (Host only) ---------- */
+    function startSweepHost(){
+      // only host allowed
+      const cur = sessionStorage.getItem('sc_user') || currentUserName;
+      if(cur !== MASTER_USER){ alert('Sweep Mode hanya untuk Host'); return; }
+
+      // prepare sweep video
+      sweepSource.src = SWEEP_VIDEO_URL;
+      try { sweepVideo.currentTime = 0; } catch(e){}
+      sweepOverlay.classList.add('show');
+      sweepOverlay.setAttribute('aria-hidden','false');
+
+      // try to play with sound (user gesture requirement satisfied by click)
+      sweepVideo.muted = false;
+      const p = sweepVideo.play();
+      if(p && p.catch){
+        p.catch(err => {
+          sweepVideo.muted = true;
+          sweepVideo.play().catch(()=>{});
+          setTimeout(()=> sweepVideo.muted = false, 350);
+        });
+      }
+
+      // show progress/log in chat area (visible to all as demo)
+      addChatLine('--- SWEEP INITIATED (Host) ---', {from:'SYSTEM'});
+      setTimeout(()=> addChatLine('Pinging nodes...', {from:'SYSTEM'}), 400);
+      setTimeout(()=> addChatLine('Analyzing patterns...', {from:'SYSTEM'}), 1000);
+      setTimeout(()=> addChatLine('Decoding anomalies...', {from:'SYSTEM'}), 2200);
+      setTimeout(()=> addChatLine('Aggregating results...', {from:'SYSTEM'}), 3200);
+      setTimeout(()=> addChatLine('Sweep complete. (demo)', {from:'SYSTEM'}), 4400);
+
+      // when sweep video ends -> hide overlay
+      const onEnd = () => {
+        sweepVideo.removeEventListener('ended', onEnd);
+        setTimeout(()=> {
+          sweepOverlay.classList.remove('show');
+          sweepOverlay.setAttribute('aria-hidden','true');
+        }, 400);
+      };
+      sweepVideo.addEventListener('ended', onEnd);
+
+      // safety timeout in case of issues
+      setTimeout(()=> {
+        if(sweepOverlay.classList.contains('show')){
+          sweepOverlay.classList.remove('show');
+          sweepOverlay.setAttribute('aria-hidden','true');
+        }
+      }, 9000);
+    }
+
+    function returnToShadow(){
+      // hide host-specific runner but keep host logged in (this returns UI to default)
+      hide(hostContainer);
+      show(loginContainer);
+      sessionStorage.removeItem('sc_user');
+      currentUser = null;
+      currentUserName = null;
+      // quick reload to ensure clean state
+      setTimeout(()=> location.reload(), 250);
+    }
+
+    /* ---------- LOGOUT ---------- */
+    function logout(){
+      sessionStorage.removeItem('sc_user');
+      currentUser = null;
+      currentUserName = null;
+      hide(hostContainer);
+      hide(userContainer);
+      show(loginContainer);
+    }
+
+    /* ---------- On load: restore session if present ---------- */
+    window.addEventListener('load', () => {
+      const saved = sessionStorage.getItem('sc_user');
+      if(saved){
+        // if previously a host, show host container automatically (but skip intro)
+        if(saved === MASTER_USER){
+          currentUserName = saved; currentUser='host';
+          show(hostContainer); hide(loginContainer);
+        } else {
+          currentUserName = saved; currentUser='user';
+          show(userContainer); hide(loginContainer);
+        }
       }
     });
+
+    // allow Enter key for login inputs
+    [usernameEl,passwordEl].forEach(inp=>{
+      inp.addEventListener('keydown', (e)=>{ if(e.key==='Enter') loginBtn.click(); });
+    });
+
+    // ensure videos are muted initially (autoplay policy) and preloaded
+    try { introVideo.muted = true; sweepVideo.muted = true; } catch(e){}
+
   </script>
 </body>
 </html>
