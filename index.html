@@ -1,126 +1,186 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Void Sweep System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Void AI System</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Courier New', monospace;
+    }
+
     body {
-      background: black;
-      color: white;
-      font-family: monospace;
-      overflow: hidden;
-      text-align: center;
-    }
-    video {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
+      background: url('https://wallpapercave.com/wp/wp7440208.gif') center/cover no-repeat fixed;
+      color: #00ffea;
       height: 100vh;
-      object-fit: cover;
-      z-index: -1;
+      overflow: hidden;
     }
-    #chatBox {
-      position: fixed;
-      bottom: 10px;
-      left: 10px;
-      background: rgba(0,0,0,0.6);
-      padding: 10px;
+
+    .overlay {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+    }
+
+    .terminal {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 600px;
+      background: rgba(0, 0, 0, 0.85);
+      border: 1px solid #00ffea;
       border-radius: 10px;
-      width: 300px;
-      max-height: 250px;
+      padding: 20px;
+      box-shadow: 0 0 20px #00ffee;
       overflow-y: auto;
+      height: 70%;
     }
-    #chatInput { width: 200px; }
-    #controls { margin-top: 10px; }
-    .hidden { display: none; }
-    .msg { text-align: left; margin-bottom: 4px; }
+
+    .line {
+      color: #00ffea;
+      margin: 5px 0;
+      font-size: 14px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .input-line {
+      display: flex;
+      margin-top: 10px;
+    }
+
+    .prefix {
+      color: #00ffaa;
+      margin-right: 5px;
+    }
+
+    input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .scan {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(0, 255, 255, 0.1) 0px,
+        rgba(0, 255, 255, 0.1) 1px,
+        transparent 2px,
+        transparent 4px
+      );
+      animation: scan 5s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes scan {
+      0% { background-position-y: 0; }
+      100% { background-position-y: 100vh; }
+    }
+
+    .title {
+      position: absolute;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 20px;
+      text-shadow: 0 0 10px cyan;
+      font-weight: bold;
+      color: cyan;
+    }
   </style>
 </head>
 <body>
-  <video id="video" autoplay muted loop src="intro.mp4"></video>
-  <audio id="sound" src="sound_normal.mp3"></audio>
+  <div class="overlay"></div>
+  <div class="title">VOID AI SYSTEM v1.3</div>
+  <div class="scan"></div>
 
-  <h2 id="modeTitle">Void AI System</h2>
+  <div class="terminal" id="terminal">
+    <div class="line">Initializing Void system...</div>
+    <div class="line">Loading AI Core [████████████████████] 100%</div>
+    <div class="line">Type <span style="color:#00ffaa;">help</span> to view commands.</div>
+  </div>
 
-  <div id="chatBox">
-    <div id="messages"></div>
-    <input id="chatInput" placeholder="Ketik pesan..." />
-    <button id="sendBtn">Kirim</button>
-    <div id="controls">
-      <button id="hideChat">Sembunyikan</button>
-      <button id="clearChat">Hapus Chat</button>
-    </div>
+  <div class="input-line">
+    <div class="prefix">root@voidAI:~$</div>
+    <input id="commandInput" type="text" autofocus autocomplete="off" />
   </div>
 
   <script>
-    let isHost = confirm("Masuk sebagai HOST?");
-    let sweepMode = false;
+    const terminal = document.getElementById('terminal');
+    const input = document.getElementById('commandInput');
 
-    const modeTitle = document.getElementById("modeTitle");
-    const video = document.getElementById("video");
-    const sound = document.getElementById("sound");
-    const chatBox = document.getElementById("chatBox");
-    const msgArea = document.getElementById("messages");
-    const input = document.getElementById("chatInput");
-    const send = document.getElementById("sendBtn");
-
-    // --- AI Basic ---
-    function aiRespond(text) {
-      if (/halo|hai/i.test(text)) return "Hai, aku Void AI siap bantu.";
-      if (/siapa kamu/i.test(text)) return "Aku sistem pengamat dalam mode ini.";
-      if (/sweep/i.test(text)) return "Sweep mode hanya bisa diaktifkan oleh Host.";
-      return "Void mendengar... tapi diam bukan berarti tak tahu.";
-    }
-
-    // --- Kirim Chat ---
-    send.onclick = () => {
-      const txt = input.value.trim();
-      if (!txt) return;
-      input.value = "";
-
-      if (txt.startsWith('Host;')) {
-        if (isHost) {
-          addMsg(`🕹️ [Private Host]: ${txt.split(';')[1]}`);
-        }
-        return;
-      }
-
-      addMsg(`<b>${isHost ? 'Host' : 'User'}:</b> ${txt}`);
-      addMsg(`<i>AI:</i> ${aiRespond(txt)}`);
+    const commands = {
+      help: `
+<b>Available commands:</b><br>
+- <span style="color:#00ffaa;">help</span> : show available commands<br>
+- <span style="color:#00ffaa;">about</span> : about this AI system<br>
+- <span style="color:#00ffaa;">sweep</span> : start data sweep simulation<br>
+- <span style="color:#00ffaa;">clear</span> : clear the terminal<br>
+- <span style="color:#00ffaa;">exit</span> : shutdown system
+      `,
+      about: `Void AI System v1.3 — created by Ryuu Tempest.
+A minimal hacking-style interface built for fun simulation and interaction.`,
     };
 
-    function addMsg(t) {
-      const div = document.createElement("div");
-      div.className = "msg";
-      div.innerHTML = t;
-      msgArea.appendChild(div);
-      msgArea.scrollTop = msgArea.scrollHeight;
+    function addLine(text, type = 'normal') {
+      const div = document.createElement('div');
+      div.classList.add('line');
+      div.innerHTML = text;
+      terminal.appendChild(div);
+      terminal.scrollTop = terminal.scrollHeight;
     }
 
-    // --- Sweep Mode ---
-    document.addEventListener("keydown", e => {
-      if (isHost && e.key === "S") {
-        sweepMode = !sweepMode;
-        if (sweepMode) {
-          modeTitle.textContent = "⚡ Sweep Mode Active";
-          video.src = "sweep_mode.mp4";
-          sound.src = "sound_sweep.mp3";
-        } else {
-          modeTitle.textContent = "Void AI System";
-          video.src = "intro.mp4";
-          sound.src = "sound_normal.mp3";
+    function processCommand(cmd) {
+      const lower = cmd.toLowerCase();
+
+      if (lower === 'help') addLine(commands.help);
+      else if (lower === 'about') addLine(commands.about);
+      else if (lower === 'clear') terminal.innerHTML = '';
+      else if (lower === 'exit') {
+        addLine('Shutting down system...');
+        setTimeout(() => { window.close(); }, 1000);
+      }
+      else if (lower === 'sweep') {
+        addLine('Initializing data sweep...');
+        simulateSweep();
+      }
+      else addLine(`<span style="color:red;">Command not found:</span> ${cmd}`);
+    }
+
+    function simulateSweep() {
+      let i = 0;
+      const interval = setInterval(() => {
+        addLine(`⟿ Scanning node ${i + 1} :: status [OK]`);
+        i++;
+        if (i === 10) {
+          clearInterval(interval);
+          addLine('Data sweep complete ✅');
         }
-        sound.play();
+      }, 400);
+    }
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && input.value.trim() !== '') {
+        addLine(`<span style="color:#00ffaa;">root@voidAI:~$</span> ${input.value}`);
+        processCommand(input.value.trim());
+        input.value = '';
       }
     });
-
-    // --- Control Chat ---
-    document.getElementById("hideChat").onclick = () => {
-      chatBox.classList.toggle("hidden");
-    };
-    document.getElementById("clearChat").onclick = () => {
-      msgArea.innerHTML = "";
-    };
   </script>
 </body>
 </html>
