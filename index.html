@@ -1,151 +1,386 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shadow / Psycho444</title>
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Courier New', monospace;
-  }
-  body {
-    background: url('https://files.catbox.moe/7ppgt3.jpg') no-repeat center center fixed;
-    background-size: cover;
-    color: #fff;
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    transition: background 1s ease;
-  }
-  .container {
-    text-align: center;
-    background: rgba(0, 0, 0, 0.55);
-    padding: 40px 60px;
-    border-radius: 20px;
-    box-shadow: 0 0 25px rgba(255, 0, 100, 0.3);
-    width: 320px;
-  }
-  h1 {
-    font-size: 2em;
-    margin-bottom: 15px;
-    letter-spacing: 2px;
-    text-shadow: 0 0 15px #ff0055;
-  }
-  p {
-    font-size: 1.1em;
-    margin-bottom: 25px;
-    color: #ccc;
-  }
-  .buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  button {
-    background: linear-gradient(90deg, #ff0055, #5500ff);
-    border: none;
-    padding: 10px 20px;
-    color: white;
-    font-size: 1em;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  button:hover {
-    transform: scale(1.07);
-    box-shadow: 0 0 15px #ff00ff;
-  }
-  #logout {
-    background: red;
-  }
-  input {
-    width: 100%;
-    padding: 10px;
-    background: rgba(20, 20, 20, 0.7);
-    border: 1px solid #ff0055;
-    border-radius: 8px;
-    color: white;
-    margin-bottom: 15px;
-    text-align: center;
-  }
-  video {
-    display: none;
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    top: 0;
-    left: 0;
-    z-index: 10;
-  }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shadow Crasher — Demo (no-AI)</title>
+  <style>
+    :root{
+      --neon:#00ff00;
+      --neon-dim:#9fffbf;
+      --bg-alpha:0.88;
+      --accent: rgba(0,255,0,0.08);
+    }
+    html,body{height:100%;margin:0;font-family:'Courier New',monospace;background:#000;color:var(--neon)}
+    body{
+      background-image:url('https://files.catbox.moe/6c41es.jpg');
+      background-size:cover;background-position:center;background-attachment:fixed;
+      display:flex;align-items:center;justify-content:center;overflow:hidden;
+    }
+    body::before{
+      content:"";position:fixed;inset:0;pointer-events:none;
+      background-image:radial-gradient(var(--neon) 1px, transparent 1px);
+      background-size:50px 50px;animation:moveStars 60s linear infinite;opacity:0.18;z-index:0;
+    }
+    @keyframes moveStars{from{background-position:0 0}to{background-position:1000px 1000px}}
+
+    .container{position:relative;z-index:2;background:rgba(0,0,0,var(--bg-alpha));padding:22px;border-radius:10px;box-shadow:0 0 20px rgba(0,255,0,0.06);width:95%;max-width:560px;text-align:center}
+    h1{font-size:26px;margin:6px 0 10px;text-shadow:0 0 8px var(--neon)}
+    input{width:100%;padding:12px;margin:10px 0;border:none;border-radius:6px;background:#0f0f0f;color:var(--neon);font-size:15px}
+    button{padding:12px;border:none;border-radius:6px;background:var(--neon);color:#000;font-weight:800;cursor:pointer}
+    button.small{padding:8px 10px;font-size:13px}
+    .esganja-tag{display:inline-block;background:linear-gradient(180deg,rgba(0,20,0,0.6),rgba(0,0,0,0.6));padding:10px 12px;border-radius:8px;border:1px solid rgba(0,255,0,0.12);margin-bottom:10px;text-align:left}
+    .tag-text{font-weight:700;color:var(--neon-dim);white-space:pre;line-height:1.05}
+    .quote{margin-top:10px;font-style:italic;color:var(--neon-dim);font-size:13px;border-left:3px solid rgba(0,255,0,0.25);padding-left:10px;text-align:left}
+    .emperor{margin-top:8px;font-weight:900;color:#c4ffd1;letter-spacing:1px;font-size:13px;text-transform:uppercase;border:1px dashed var(--accent);padding:6px 10px;border-radius:6px;display:inline-block}
+    .menu-decor{height:8px;margin:10px 0 6px;display:flex;gap:6px;justify-content:center;align-items:center}
+    .menu-decor .bar{width:40px;height:4px;border-radius:2px;background:linear-gradient(90deg,var(--neon),#00cc88);opacity:.12}
+    .menu-decor .dot{width:8px;height:8px;border-radius:50%;background:var(--neon)}
+    .sep{height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:10px 0;border-radius:2px}
+
+    /* video overlay full */
+    .video-overlay{position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.95);opacity:0;pointer-events:none;transition:opacity .35s}
+    .video-overlay.show{opacity:1;pointer-events:all}
+    .video-frame{width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .video-frame video{width:100%;height:100%;object-fit:cover}
+
+    /* chat box */
+    .chat-box{position:fixed;left:12px;bottom:12px;background:rgba(0,0,0,0.75);border:1px solid rgba(0,255,0,0.06);padding:10px;border-radius:8px;width:320px;z-index:10}
+    .chat-messages{height:180px;overflow:auto;padding:8px;background:rgba(0,0,0,0.55);border-radius:6px;margin-bottom:8px;color:var(--neon-dim);font-size:13px}
+    .chat-row{display:flex;gap:8px}
+    .chat-row input{flex:1;padding:8px;border-radius:6px;border:none;background:#0d0d0d;color:var(--neon)}
+    .chat-row button{padding:8px 10px;border-radius:6px;border:none;background:var(--neon);color:#000}
+    .chat-controls{display:flex;gap:8px;margin-top:6px;justify-content:center}
+    .hidden{display:none}
+
+    /* host container adjustments */
+    .host-controls{margin-top:10px;text-align:left}
+
+    /* responsive */
+    @media(max-width:420px){
+      .chat-box{width:88%}
+      .container{padding:16px}
+    }
+  </style>
 </head>
 <body>
-  <!-- Video saat Sweep Mode -->
-  <video id="sweepVideo" src="https://files.catbox.moe/i4ixzs.mp4"></video>
-  
-  <!-- Mode Awal -->
-  <div class="container" id="mainUI">
-    <h1>🕷️ SHADOW MODE 🕷️</h1>
-    <p>Welcome to the realm of darkness.</p>
-    <div class="buttons">
-      <button id="sweepMode">Sweep Mode ☠️</button>
-      <button id="logout">Logout</button>
-      <button>WhatsApp</button>
-      <button>TikTok</button>
+  <!-- video overlays -->
+  <div id="introOverlay" class="video-overlay" aria-hidden="true">
+    <div class="video-frame"><video id="introVideo" playsinline preload="auto" muted><source src="https://files.catbox.moe/ygad1n.mp4" type="video/mp4"></video></div>
+  </div>
+
+  <div id="sweepOverlay" class="video-overlay" aria-hidden="true">
+    <div class="video-frame"><video id="sweepVideo" playsinline preload="auto" muted><source id="sweepSource" src="https://files.catbox.moe/ygad1n.mp4" type="video/mp4"></video></div>
+  </div>
+
+  <!-- main container (login) -->
+  <div class="container" id="loginContainer" role="region" aria-label="Login">
+    <div class="esganja-tag" aria-hidden="true"><pre class="tag-text">╔═══◆═══◇═══◆═══╗
+║ Esganja92               ║
+║ Ryuu(19)🕷️ | OWNER ║
+╚═══◆═══◇═══◆═══╝</pre></div>
+
+    <h1>Login Tools</h1>
+    <div class="menu-decor" aria-hidden="true"><div class="bar"></div><div class="dot"></div><div class="bar"></div></div>
+
+    <div class="quote" aria-hidden="true">"jika dia tak memilihmu maka  pergilah kamu hanya menganggunya"
+      <span style="display:block;margin-top:6px;font-weight:700">—RyuuSaid—</span>
+    </div>
+
+    <input id="username" placeholder="Username" autocomplete="off" />
+    <input id="password" placeholder="Password" type="password" autocomplete="off" />
+    <button id="loginBtn">LOGIN</button>
+
+    <a class="chat-link" href="https://wa.me/62882006305047" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:10px;padding:8px 10px;border-radius:6px;background:linear-gradient(90deg,rgba(0,255,0,0.95),rgba(0,200,0,0.9));color:#001200;font-weight:800;text-decoration:none">📲 Chat Ryuu via WA — 62882006305047</a>
+    <a class="chat-link" href="https://www.tiktok.com/@ryunodev" target="_blank" rel="noopener noreferrer" style="display:block;margin-top:8px;color:var(--neon-dim);text-decoration:none">@ryunodev — TikTok</a>
+
+    <p style="margin-top:8px;font-size:12px;opacity:.7;text-align:left;">Website: <a id="siteLink" href="https://ryuutempest444.github.io/ShadowCrasher-By-RyuuTempestV1/" target="_blank" style="color:var(--neon-dim);text-decoration:none;">ryuutempest444.github.io/ShadowCrasher-By-RyuuTempestV1</a></p>
+  </div>
+
+  <!-- host container -->
+  <div class="container hidden" id="hostContainer" role="region" aria-label="Host Mode">
+    <div class="esganja-tag" aria-hidden="true"><pre class="tag-text">╔═══◆═══◇═══◆═══╗
+║ Esganja92               ║
+║ Ryuu(19)🕷️ | OWNER ║
+╚═══◆═══◇═══◆═══╝</pre></div>
+
+    <h1>⚡ Shadow Crasher ⚡ (Host Mode)</h1>
+    <div class="menu-decor"><div class="bar"></div><div class="dot"></div><div class="bar"></div></div>
+    <div class="emperor">EmperorRyuuReturns</div>
+    <div class="sep"></div>
+
+    <p><strong>Nomor Sender :</strong></p>
+    <input id="senderNumber" placeholder="Contoh: 62882006305047" />
+    <p><strong>Nomor Target :</strong></p>
+    <input id="targetNumberHost" placeholder="Contoh: 6281234567890" />
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+      <button onclick="demoAction('Ultimate Crash')">Ultimate Crash</button>
+      <button onclick="demoAction('Crash Invisible')">Crash Invisible</button>
+      <button onclick="demoAction('Hard Delay Invisible')">Hard Delay Invisible</button>
+      <button onclick="demoAction('iOS Crash (Exp)')">iOS Crash (Exp)</button>
+      <button onclick="demoAction('Android UI Killer')">Android UI Killer</button>
+    </div>
+
+    <div class="host-controls">
+      <div style="margin-top:10px;font-weight:700">Sweep Mode (Host)</div>
+      <div style="margin-top:8px">
+        <button class="small" id="btnRunSweep" onclick="startSweepHost()">RUN SWEEP</button>
+        <button class="small" onclick="returnToShadow()">Return to Shadow</button>
+      </div>
+      <div style="margin-top:8px" class="sep"></div>
+      <div style="margin-top:8px;">
+        <a class="chat-link" href="https://wa.me/62882006305047" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:8px 10px;border-radius:6px;background:linear-gradient(90deg,rgba(0,255,0,0.95),rgba(0,200,0,0.9));color:#001200;font-weight:800;text-decoration:none">📲 Hubungi Owner — 62882006305047</a>
+        <a class="chat-link" href="https://www.tiktok.com/@ryunodev" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-left:8px;color:var(--neon-dim);text-decoration:none">@ryunodev — TikTok</a>
+      </div>
+
+    </div>
+
+    <div style="margin-top:10px;text-align:center">
+      <button onclick="logout()" style="background:#ff6666;color:#000;padding:10px 14px;border-radius:8px;border:none">LOG OUT</button>
     </div>
   </div>
 
-  <!-- Mode Psycho444 -->
-  <div class="container" id="psychoUI" style="display:none;">
-    <h1>☠️ PSYCHO444 ☠️</h1>
-    <p>Enter your number & choose your weapon.</p>
-    <input type="text" id="numberInput" placeholder="Enter number...">
-    <div class="buttons">
-      <button>The Dark Blade</button>
-      <button>HollowStrike</button>
-      <button>TenEyes</button>
-      <button>Gencart</button>
-      <button>SixPant</button>
-      <button>MalyenCrash</button>
-      <button id="returnMode">Sweep Mode Return 🔁</button>
-      <button id="logout">Logout</button>
-      <button>WhatsApp</button>
-      <button>TikTok</button>
+  <!-- user container -->
+  <div class="container hidden" id="userContainer" role="region" aria-label="User Mode">
+    <div class="esganja-tag" aria-hidden="true"><pre class="tag-text">╔═══◆═══◇═══◆═══╗
+║ Esganja92               ║
+║ Ryuu(19)🕷️ | OWNER ║
+╚═══◆═══◇═══◆═══╝</pre></div>
+
+    <h1>⚡ Shadow Crasher ⚡ (User Mode)</h1>
+    <div class="menu-decor"><div class="bar"></div><div class="dot"></div><div class="bar"></div></div>
+    <div class="emperor">EmperorRyuuReturns</div>
+    <div class="sep"></div>
+
+    <p><strong>Nomor Target :</strong></p>
+    <input id="targetNumberUser" placeholder="Contoh: 6281234567890" />
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+      <button onclick="demoAction('Ultimate Crash')">Ultimate Crash</button>
+      <button onclick="demoAction('Crash Invisible')">Crash Invisible</button>
+      <button onclick="demoAction('Hard Delay Invisible')">Hard Delay Invisible</button>
+      <button onclick="demoAction('iOS Crash (Exp)')">iOS Crash (Exp)</button>
+      <button onclick="demoAction('Android UI Killer')">Android UI Killer</button>
+    </div>
+
+    <div style="margin-top:12px">
+      <a class="chat-link" href="https://wa.me/62882006305047" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:8px 10px;border-radius:6px;background:linear-gradient(90deg,rgba(0,255,0,0.95),rgba(0,200,0,0.9));color:#001200;font-weight:800;text-decoration:none">📲 Hubungi Owner — 62882006305047</a>
+      <a class="chat-link" href="https://www.tiktok.com/@ryunodev" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-left:8px;color:var(--neon-dim);text-decoration:none">@ryunodev — TikTok</a>
+    </div>
+
+    <div style="margin-top:10px;text-align:center">
+      <button onclick="logout()" style="background:#ff6666;color:#000;padding:10px 14px;border-radius:8px;border:none">LOG OUT</button>
     </div>
   </div>
 
-<script>
-const sweepBtn = document.getElementById('sweepMode');
-const returnBtn = document.getElementById('returnMode');
-const mainUI = document.getElementById('mainUI');
-const psychoUI = document.getElementById('psychoUI');
-const video = document.getElementById('sweepVideo');
+  <!-- chat box -->
+  <div class="chat-box" id="chatBox" role="region" aria-label="Chat">
+    <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
+    <div class="chat-row">
+      <input id="chatInput" placeholder="Ketik pesan..." autocomplete="off" />
+      <button id="sendChatBtn">Kirim</button>
+    </div>
+    <div class="chat-controls">
+      <button id="toggleChatBtn" class="small">Sembunyikan</button>
+      <button id="clearChatBtn" class="small">Hapus Chat</button>
+    </div>
+  </div>
 
-sweepBtn.addEventListener('click', () => {
-  video.style.display = 'block';
-  video.play();
-  video.onended = () => {
-    video.style.display = 'none';
-    mainUI.style.display = 'none';
-    psychoUI.style.display = 'block';
-    document.body.style.background = "url('https://files.catbox.moe/7ppgt3.jpg') no-repeat center center fixed";
-    document.body.style.backgroundSize = "cover";
-  };
-});
+  <audio id="effectSound" src="https://files.catbox.moe/ophu1v.m4a"></audio>
 
-returnBtn.addEventListener('click', () => {
-  psychoUI.style.display = 'none';
-  mainUI.style.display = 'block';
-  document.body.style.background = "url('https://files.catbox.moe/7ppgt3.jpg') no-repeat center center fixed";
-  document.body.style.backgroundSize = "cover";
-});
-</script>
-</body>
-</html>
+  <script>
+    /* ---------- CONFIG ---------- */
+    const SITE_URL = 'https://ryuutempest444.github.io/ShadowCrasher-By-RyuuTempestV1/';
+    const MASTER_USER = 'RyuuHost';
+    const MASTER_PW = 'Crasher444';
+    const USER_NAME = 'UserNi';
+    const USER_PW = 'Ry444';
+
+    // If you have a different sweep video, replace below URL (must be direct .mp4)
+    const SWEEP_VIDEO_URL = 'https://files.catbox.moe/ygad1n.mp4'; // change to new .mp4 when ready
+
+    /* ---------- ELEMENTS ---------- */
+    const loginContainer = document.getElementById('loginContainer');
+    const hostContainer = document.getElementById('hostContainer');
+    const userContainer = document.getElementById('userContainer');
+    const loginBtn = document.getElementById('loginBtn');
+    const usernameEl = document.getElementById('username');
+    const passwordEl = document.getElementById('password');
+    const introOverlay = document.getElementById('introOverlay');
+    const introVideo = document.getElementById('introVideo');
+    const sweepOverlay = document.getElementById('sweepOverlay');
+    const sweepVideo = document.getElementById('sweepVideo');
+    const sweepSource = document.getElementById('sweepSource');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const sendChatBtn = document.getElementById('sendChatBtn');
+    const toggleChatBtn = document.getElementById('toggleChatBtn');
+    const clearChatBtn = document.getElementById('clearChatBtn');
+    const siteLink = document.getElementById('siteLink');
+
+    // UI setup
+    siteLink.textContent = SITE_URL;
+    introVideo.preload = 'auto';
+    sweepVideo.preload = 'auto';
+
+    /* ---------- STATE ---------- */
+    let currentUser = null; // 'host' or 'user'
+    let currentUserName = null; // username string
+
+    /* ---------- HELPERS ---------- */
+    function show(el){ el.classList.remove('hidden'); }
+    function hide(el){ el.classList.add('hidden'); }
+    function addChatLine(text, opts = {}) {
+      // opts: {privateForHost: true/false, from: 'Host'|'User'}
+      // if privateForHost and current viewer is not host -> skip append
+      const line = document.createElement('div');
+      line.style.marginBottom = '6px';
+      line.style.fontSize = '13px';
+      if(opts.privateForHost){
+        line.dataset.privateHost = '1';
+        line.innerHTML = `<span style="color:#ff8888">[HOST-ONLY]</span> <span style="color:${opts.color||'var(--neon-dim)'}">${opts.from||'Host'}:</span> ${escapeHtml(text)}`;
+      } else {
+        line.innerHTML = `<span style="color:${opts.color||'var(--neon-dim)'}">${opts.from||'User'}:</span> ${escapeHtml(text)}`;
+      }
+      chatMessages.appendChild(line);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    function escapeHtml(s){ return String(s).replace(/[&<>"']/g, (m)=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]) ); }
+
+    /* ---------- LOGIN & INTRO ---------- */
+    async function showIntroAndEnter(mode){
+      // hide login UI
+      loginContainer.classList.add('hidden');
+      // show overlay and play intro video with sound (user clicked button => gesture allowed)
+      introOverlay.classList.add('show');
+      introOverlay.setAttribute('aria-hidden','false');
+      try { introVideo.currentTime = 0; } catch(e){}
+      introVideo.muted = false;
+      const p = introVideo.play();
+      if(p && p.catch) {
+        p.catch(err => {
+          introVideo.muted = true;
+          introVideo.play().catch(()=>{});
+          setTimeout(()=> introVideo.muted = false, 300);
+        });
+      }
+      // after video ends -> show proper container
+      const onEnd = () => {
+        introVideo.removeEventListener('ended', onEnd);
+        introOverlay.classList.remove('show');
+        introOverlay.setAttribute('aria-hidden','true');
+        if(mode==='host'){ show(hostContainer); currentUser='host'; }
+        else { show(userContainer); currentUser='user'; }
+      };
+      introVideo.addEventListener('ended', onEnd);
+
+      // safety fallback if video stuck - proceed after 4s
+      setTimeout(()=> {
+        if(introOverlay.classList.contains('show')){
+          introVideo.removeEventListener('ended', onEnd);
+          introOverlay.classList.remove('show');
+          introOverlay.setAttribute('aria-hidden','true');
+          if(mode==='host'){ show(hostContainer); currentUser='host'; }
+          else { show(userContainer); currentUser='user'; }
+        }
+      }, 4000);
+    }
+
+    function checkLogin(){
+      const u = usernameEl.value.trim();
+      const p = passwordEl.value.trim();
+      if(!u || !p){ alert('Isi Username & Password dulu!'); return; }
+      if(u === MASTER_USER && p === MASTER_PW){
+        currentUserName = u;
+        sessionStorage.setItem('sc_user', u);
+        showIntroAndEnter('host');
+      } else if(u === USER_NAME && p === USER_PW){
+        currentUserName = u;
+        sessionStorage.setItem('sc_user', u);
+        showIntroAndEnter('user');
+      } else {
+        alert('Username atau Password salah!');
+      }
+    }
+    loginBtn.addEventListener('click', checkLogin);
+
+    /* ---------- CHAT ---------- */
+    function sendChat(){
+      const txt = chatInput.value.trim();
+      if(!txt) return;
+      chatInput.value = '';
+      // host-private format: Host;"message" or Host;"m"
+      // also support =Host;... older format - accept both that start with Host;" or =Host;
+      const isPrivateHost = (/^(Host;|=Host;)/i).test(txt) || (/^Host;".+"$/i).test(txt) || (/^Host;".*"/i).test(txt);
+      // If message starts with Host;" then extract after that
+      if(/^Host;"/i.test(txt)){
+        // Host;"message"
+        if(currentUserName === MASTER_USER){
+          const m = txt.replace(/^Host;"/i,'').replace(/"$/,'');
+          addChatLine(m, {privateForHost:true, from: 'Host', color:'#ffaaaa'});
+        } else {
+          // non-host trying Host;" - ignore / treat as normal
+          addChatLine(txt, {from: currentUserName || 'Guest'});
+        }
+        return;
+      }
+      // =Host; legacy pattern -> only show to host
+      if(/^=Host;/i.test(txt)){
+        const m = txt.replace(/^=Host;/i,'');
+        if(currentUserName === MASTER_USER){
+          addChatLine(m, {privateForHost:true, from:'Host', color:'#ffaaaa'});
+        }
+        return;
+      }
+      // normal broadcast
+      addChatLine(txt, {from: currentUserName || 'Guest'});
+    }
+
+    sendChatBtn.addEventListener('click', sendChat);
+    chatInput.addEventListener('keydown', (e) => { if(e.key==='Enter') sendChat(); });
+
+    toggleChatBtn.addEventListener('click', () => { document.getElementById('chatBox').classList.toggle('hidden'); toggleChatBtn.textContent = document.getElementById('chatBox').classList.contains('hidden') ? 'Tampilkan' : 'Sembunyikan'; });
+    clearChatBtn.addEventListener('click', ()=> { if(confirm('Hapus semua chat?')) chatMessages.innerHTML=''; });
+
+    /* ---------- DEMO ACTION (safe) ---------- */
+    function demoAction(name){
+      alert(`(DEMO) Action: ${name}`);
+      try { effectSound.play().catch(()=>{}); } catch(e){}
+    }
+
+    /* ---------- SWEEP MODE (Host only) ---------- */
+    function startSweepHost(){
+      // only host allowed
+      const cur = sessionStorage.getItem('sc_user') || currentUserName;
+      if(cur !== MASTER_USER){ alert('Sweep Mode hanya untuk Host'); return; }
+
+      // prepare sweep video
+      sweepSource.src = SWEEP_VIDEO_URL;
+      try { sweepVideo.currentTime = 0; } catch(e){}
+      sweepOverlay.classList.add('show');
+      sweepOverlay.setAttribute('aria-hidden','false');
+
+      // try to play with sound (user gesture requirement satisfied by click)
+      sweepVideo.muted = false;
+      const p = sweepVideo.play();
+      if(p && p.catch){
+        p.catch(err => {
+          sweepVideo.muted = true;
+          sweepVideo.play().catch(()=>{});
+          setTimeout(()=> sweepVideo.muted = false, 350);
+        });
+      }
+
+      // show progress/log in chat area (visible to all as demo)
+      addChatLine('--- SWEEP INITIATED (Host) ---', {from:'SYSTEM'});
+      setTimeout(()=> addChatLine('Pinging nodes...', {from:'SYSTEM'}), 400);
+      setTimeout(()=> addChatLine('Analyzing patterns...', {from:'SYSTEM'}), 1000);
+      setTimeout(()=> addChatLine('Decoding anomalies...', {from:'SYSTEM'}), 2200);
+      setTimeout(()=> addChatLine('Aggregating results...', {from:'SYSTEM'}), 3200);
+      setTimeout(()=> addChatLine('Sweep complete. (demo)', {from:'SYSTEM'}), 4400);
+
+      // when sweep video ends -> hide overlay
+      const onEnd = () => {
+        sweepVideo.removeEventListener('ended', onEnd);
+        setTimeout(()=> {
+          sweepOverlay.classList.remove('show');
+          s
