@@ -1,173 +1,318 @@
 <!doctype html>
-<html lang="id">  
-<head>  
-  <meta charset="utf-8" />  
-  <meta name="viewport" content="width=device-width,initial-scale=1" />  
-  <title>Shadow Crasher — Demo</title>  
-  <meta name="description" content="Shadow Crasher — cinematic demo (safe)" />  
-  <style>  
-    :root{  
-      --neon: #00ff00;  
-      --neon-dim: #9fffbf;  
-      --bg-alpha: 0.88;  
-      --accent: rgba(0,255,0,0.08);  
-    }  
-    html,body{height:100%;margin:0;font-family:'Courier New',monospace;background:#000}  
-    body{  
-      color:var(--neon);  
-      background-image:url('https://files.catbox.moe/6c41es.jpg');  
-      background-size:cover;  
-      background-position:center;  
-      background-attachment:fixed;  
-      display:flex;  
-      align-items:center;  
-      justify-content:center;  
-      overflow:hidden;  
-    }  
-    body::before{  
-      content:"";  
-      position:fixed;inset:0;  
-      pointer-events:none;  
-      background-image:radial-gradient(var(--neon) 1px, transparent 1px);  
-      background-size:50px 50px;  
-      opacity:0.18;  
-      animation:moveStars 60s linear infinite;  
-      z-index:0;  
-    }  
-    @keyframes moveStars{from{background-position:0 0}to{background-position:1000px 1000px}}  
-    .container{position:relative; z-index:2; background-color: rgba(0,0,0,var(--bg-alpha)); padding:26px 28px; border-radius:10px; box-shadow: 0 0 20px rgba(0,255,0,0.06); text-align:center; width:95%; max-width:540px; margin:12px;}  
-    h1{animation: glow 2s infinite;font-size:28px;margin:10px 0 8px;}  
-    @keyframes glow{0%{text-shadow:0 0 5px var(--neon),0 0 10px var(--neon)}50%{text-shadow:0 0 15px var(--neon),0 0 25px var(--neon)}100%{text-shadow:0 0 5px var(--neon),0 0 10px var(--neon)}}  
-    input{width:100%;padding:14px;margin:12px 0;border:none;border-radius:6px;background:#0f0f0f;color:var(--neon);font-size:15px;box-sizing:border-box}  
-    button{width:100%;padding:13px;margin-top:10px;border:none;border-radius:6px;background:var(--neon);color:#000;font-weight:800;font-size:15px;cursor:pointer;transition:all .18s}  
-    button:hover{background:#00cc00; transform:translateY(-2px)}  
-    .esganja-tag{display:inline-block;background:linear-gradient(180deg,rgba(0,20,0,0.6),rgba(0,0,0,0.6)); padding:10px 12px;border-radius:8px;box-shadow:0 8px 28px rgba(0,255,0,0.05), inset 0 1px 0 rgba(255,255,255,0.02); border:1px solid rgba(0,255,0,0.12); margin-bottom:10px; text-align:left;}  
-    .esganja-tag .tag-text{margin:0;font-family:"Courier New",Courier,monospace;font-weight:700;font-size:15px;line-height:1;color:var(--neon-dim);letter-spacing:0.6px;white-space:pre;text-shadow:0 1px 0 rgba(0,0,0,0.7)}  
-    .quote{margin-top:12px;font-style:italic;color:var(--neon-dim);opacity:0.98;font-size:13px;border-left:3px solid rgba(0,255,0,0.25);padding-left:10px;text-align:left}  
-    .quote .author{display:block;margin-top:6px;font-weight:700;letter-spacing:0.8px;font-size:12px;opacity:0.95}  
-    .emperor{margin-top:8px;font-weight:900;color:#c4ffd1;letter-spacing:1px;font-size:13px;text-transform:uppercase;text-shadow:0 1px 0 rgba(0,0,0,0.6);border:1px dashed var(--accent);padding:6px 10px;border-radius:6px;display:inline-block}  
-    .menu-decor{height:8px;margin:12px 0 6px;display:flex;gap:6px;justify-content:center;align-items:center}  
-    .menu-decor .bar{width:40px;height:4px;border-radius:2px;background:linear-gradient(90deg,var(--neon),#00cc88);opacity:.12;box-shadow:0 0 8px rgba(0,255,0,0.02)}  
-    .menu-decor .dot{width:8px;height:8px;border-radius:50%;background:var(--neon);box-shadow:0 0 10px rgba(0,255,0,0.12)}  
-    .sep{height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:10px 0;border-radius:2px}  
-    .wa-btn{display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:10px 14px;border-radius:8px;background:linear-gradient(90deg,rgba(0,255,0,0.95),rgba(0,200,0,0.9));color:#001200;font-weight:800;text-decoration:none;font-family:"Courier New",monospace;box-shadow:0 6px 18px rgba(0,255,0,0.08)}  
-    .tiktok{display:block;margin-top:8px;font-family:"Courier New",monospace;font-size:13px;color:var(--neon-dim);text-decoration:none;opacity:.95}  
-    .tiktok:hover{text-decoration:underline;opacity:1}  
-    .video-overlay{position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.9);opacity:0;pointer-events:none;transition:opacity .45s ease;}  
-    .video-overlay.show{opacity:1;pointer-events:all}  
-    .video-frame{width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}  
-    .video-frame video{width:100%;height:100%;object-fit:cover}  
-    .fade-out{animation:fadeOut .45s forwards}  
-    .fade-in{animation:fadeIn .45s forwards}  
-    @keyframes fadeOut{to{opacity:0;transform:translateY(6px) scale(.995)}}  
-    @keyframes fadeIn{from{opacity:0;transform:translateY(6px) scale(.995)} to{opacity:1;transform:none}}  
-    .black-fade{position:fixed;inset:0;background:#000;z-index:1000;opacity:0;pointer-events:none;transition:opacity .5s ease}  
-    .black-fade.show{opacity:1;pointer-events:all}  
-    @media(max-width:420px){ .esganja-tag .tag-text{font-size:13px} .container{padding:18px;max-width:380px} .emperor{font-size:12px} }
-  </style>  
-</head>  
-<body>  
-  <div id="videoOverlay" class="video-overlay" aria-hidden="true">  
-    <div class="video-frame">  
-      <video id="introVideo" playsinline preload="auto">  
-        <source src="https://files.catbox.moe/i4ixzs.mp4" type="video/mp4">  
-        Your browser does not support the loading video.  
-      </video>  
-    </div>  
-  </div>  
-  <div id="blackFade" class="black-fade" aria-hidden="true"></div>  
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Shadow Crasher — Demo</title>
+<meta name="description" content="Shadow Crasher — cinematic demo (safe)" />
+<style>
+:root{
+  --neon:#00ff00;
+  --neon-dim:#9fffbf;
+  --bg-alpha:0.88;
+  --accent:rgba(0,255,0,0.08);
+}
+html,body{height:100%;margin:0;font-family:'Courier New',monospace;background:#000}
+body{
+  color:var(--neon);
+  background-image:url('https://files.catbox.moe/6c41es.jpg');
+  background-size:cover;
+  background-position:center;
+  background-attachment:fixed;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+body::before{
+  content:"";
+  position:fixed;inset:0;
+  pointer-events:none;
+  background-image:radial-gradient(var(--neon) 1px, transparent 1px);
+  background-size:50px 50px;
+  opacity:0.18;
+  animation:moveStars 60s linear infinite;
+  z-index:0;
+}
+@keyframes moveStars{from{background-position:0 0}to{background-position:1000px 1000px}}
+.container{
+  position:relative; z-index:2;
+  background-color: rgba(0,0,0,var(--bg-alpha));
+  padding:26px 28px;
+  border-radius:10px;
+  box-shadow:0 0 20px rgba(0,255,0,0.06);
+  text-align:center;
+  width:95%; max-width:540px; margin:12px;
+}
+h1{animation:glow 2s infinite;font-size:28px;margin:10px 0 8px;}
+@keyframes glow{
+  0%{text-shadow:0 0 5px var(--neon),0 0 10px var(--neon)}
+  50%{text-shadow:0 0 15px var(--neon),0 0 25px var(--neon)}
+  100%{text-shadow:0 0 5px var(--neon),0 0 10px var(--neon)}
+}
+input{width:100%;padding:14px;margin:12px 0;border:none;border-radius:6px;background:#0f0f0f;color:var(--neon);font-size:15px;box-sizing:border-box}
+button{width:100%;padding:13px;margin-top:10px;border:none;border-radius:6px;background:var(--neon);color:#000;font-weight:800;font-size:15px;cursor:pointer;transition:all .18s}
+button:hover{background:#00cc00;transform:translateY(-2px)}
+.esganja-tag{
+  display:inline-block;background:linear-gradient(180deg,rgba(0,20,0,0.6),rgba(0,0,0,0.6));
+  padding:10px 12px;border-radius:8px;box-shadow:0 8px 28px rgba(0,255,0,0.05), inset 0 1px 0 rgba(255,255,255,0.02);
+  border:1px solid rgba(0,255,0,0.12); margin-bottom:10px; text-align:left;
+}
+.esganja-tag .tag-text{margin:0;font-family:"Courier New",Courier,monospace;font-weight:700;font-size:15px;line-height:1;color:var(--neon-dim);letter-spacing:0.6px;white-space:pre;text-shadow:0 1px 0 rgba(0,0,0,0.7)}
+.quote{margin-top:12px;font-style:italic;color:var(--neon-dim);opacity:0.98;font-size:13px;border-left:3px solid rgba(0,255,0,0.25);padding-left:10px;text-align:left}
+.quote .author{display:block;margin-top:6px;font-weight:700;letter-spacing:0.8px;font-size:12px;opacity:0.95}
+.emperor{margin-top:8px;font-weight:900;color:#c4ffd1;letter-spacing:1px;font-size:13px;text-transform:uppercase;text-shadow:0 1px 0 rgba(0,0,0,0.6);border:1px dashed var(--accent);padding:6px 10px;border-radius:6px;display:inline-block}
+.menu-decor{height:8px;margin:12px 0 6px;display:flex;gap:6px;justify-content:center;align-items:center}
+.menu-decor .bar{width:40px;height:4px;border-radius:2px;background:linear-gradient(90deg,var(--neon),#00cc88);opacity:.12;box-shadow:0 0 8px rgba(0,255,0,0.02)}
+.menu-decor .dot{width:8px;height:8px;border-radius:50%;background:var(--neon);box-shadow:0 0 10px rgba(0,255,0,0.12)}
+.sep{height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:10px 0;border-radius:2px}
+.wa-btn{display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:10px 14px;border-radius:8px;background:linear-gradient(90deg,rgba(0,255,0,0.95),rgba(0,200,0,0.9));color:#001200;font-weight:800;text-decoration:none;font-family:"Courier New",monospace;box-shadow:0 6px 18px rgba(0,255,0,0.08)}
+.tiktok{display:block;margin-top:8px;font-family:"Courier New",monospace;font-size:13px;color:var(--neon-dim);text-decoration:none;opacity:.95}
+.tiktok:hover{text-decoration:underline;opacity:1}
+.video-overlay{position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.9);opacity:0;pointer-events:none;transition:opacity .45s ease;}
+.video-overlay.show{opacity:1;pointer-events:all}
+.video-frame{width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.video-frame video{width:100%;height:100%;object-fit:cover}
+.fade-out{animation:fadeOut .45s forwards}
+.fade-in{animation:fadeIn .45s forwards}
+@keyframes fadeOut{to{opacity:0;transform:translateY(6px) scale(.995)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px) scale(.995)} to{opacity:1;transform:none}}
+.black-fade{position:fixed;inset:0;background:#000;z-index:1000;opacity:0;pointer-events:none;transition:opacity .5s ease}
+.black-fade.show{opacity:1;pointer-events:all}
+@media(max-width:420px){ .esganja-tag .tag-text{font-size:13px} .container{padding:18px;max-width:380px} .emperor{font-size:12px} }
+</style>
+</head>
+<body>
 
-  <!-- LOGIN CONTAINER -->
-  <div class="container fade-in" id="loginContainer" role="region" aria-label="Login">  
-    <div class="esganja-tag" aria-hidden="true">  
-<pre class="tag-text">╔═══◆═══◇═══◆═══╗  
-║ Esganja92               ║  
-║ Ryuu(19)🕷️ | OWNER ║  
-╚═══◆═══◇═══◆═══╝</pre>  
-    </div>  
-    <h1>Login Tools</h1>  
-    <div class="menu-decor" aria-hidden="true">  
-      <div class="bar"></div><div class="dot"></div><div class="bar"></div>  
-    </div>  
-    <div class="quote" aria-hidden="true">  
-      "jika dia tak memilihmu maka  pergilah kamu hanya menganggunya"  
-      <span class="author">—RyuuSaid—</span>  
-    </div>  
-    <input type="text" id="username" placeholder="Username" autocomplete="off" />  
-    <input type="password" id="password" placeholder="Password" autocomplete="off" />  
-    <button id="loginBtn">LOGIN</button>  
-    <a id="waContactLogin" class="wa-btn" href="https://wa.me/62882006305047" target="_blank" rel="noopener noreferrer">📲 Chat Ryuu via WA — 62882006305047</a>  
-    <a class="tiktok" href="https://www.tiktok.com/@ryunodev" target="_blank" rel="noopener noreferrer">@ryunodev — TikTok</a>  
-    <p style="margin-top:8px;font-size:12px;opacity:.7;text-align:left;">  
-      Website: <a id="siteLink" href="https://ryuutempest444.github.io/ShadowCrasher-By-RyuuTempestV1/" target="_blank" style="color:var(--neon-dim);text-decoration:none;">ryuutempest444.github.io/ShadowCrasher-By-RyuuTempestV1</a>  
-    </p>
-  </div>  
+<!-- Video overlay (hidden until login) -->
+<div id="videoOverlay" class="video-overlay" aria-hidden="true">
+  <div class="video-frame">
+    <video id="introVideo" playsinline preload="auto">
+      <!-- video replaced per request -->
+      <source src="https://files.catbox.moe/i4ixzs.mp4" type="video/mp4">
+      Your browser does not support the loading video.
+    </video>
+  </div>
+</div>
 
-  <!-- HOST & USER containers tetap sama (tidak diubah) -->
+<div id="blackFade" class="black-fade" aria-hidden="true"></div>
 
-  <audio id="effectSound" src="https://files.catbox.moe/ophu1v.m4a"></audio>
+<!-- LOGIN -->
+<div class="container fade-in" id="loginContainer" role="region" aria-label="Login">
+  <div class="esganja-tag" aria-hidden="true">
+<pre class="tag-text">╔═══◆═══◇═══◆═══╗
+║ Esganja92               ║
+║ Ryuu(19)🕷️ | OWNER ║
+╚═══◆═══◇═══◆═══╝</pre>
+  </div>
 
-  <script>  
-    const websiteUrl = 'https://ryuutempest444.github.io/ShadowCrasher-By-RyuuTempestV1/';  
-    const masterUser = 'RyuuHost';  
-    const masterPw = 'Crasher444';  
-    const userUser = 'UserNi';  
-    const userPw = 'Ry444';  
-    const loginBtn = document.getElementById('loginBtn');  
-    const usernameEl = document.getElementById('username');  
-    const passwordEl = document.getElementById('password');  
-    const loginContainer = document.getElementById('loginContainer');  
-    const hostContainer = document.getElementById('hostContainer');  
-    const userContainer = document.getElementById('userContainer');  
-    const videoOverlay = document.getElementById('videoOverlay');  
-    const introVideo = document.getElementById('introVideo');  
-    const blackFade = document.getElementById('blackFade');  
-    document.getElementById('siteLink').textContent = websiteUrl;  
+  <h1>Login Tools</h1>
+  <div class="menu-decor" aria-hidden="true"><div class="bar"></div><div class="dot"></div><div class="bar"></div></div>
+  <div class="quote" aria-hidden="true">
+    "jika dia tak memilihmu maka pergilah kamu hanya menganggunya"
+    <span class="author">—RyuuSaid—</span>
+  </div>
 
-    function playIntroAndEnter(targetMode){  
-      loginContainer.classList.add('fade-out');  
-      setTimeout(()=> { loginContainer.style.display = 'none'; }, 420);  
-      videoOverlay.classList.add('show');  
-      videoOverlay.setAttribute('aria-hidden','false');  
-      try { introVideo.currentTime = 0; } catch(e){}  
-      introVideo.muted = false;  
-      const playPromise = introVideo.play();  
-      if(playPromise !== undefined){  
-        playPromise.catch(err => { introVideo.muted = true; introVideo.play().catch(()=>{}); setTimeout(()=>{ introVideo.muted = false; }, 300); });  
-      }  
-      const onVideoEnded = () => {  
-        introVideo.removeEventListener('ended', onVideoEnded);  
-        blackFade.classList.add('show');  
-        setTimeout(()=>{  
-          videoOverlay.classList.remove('show');  
-          videoOverlay.setAttribute('aria-hidden','true');  
-          blackFade.classList.remove('show');  
-          if(targetMode === 'host'){  
-            hostContainer.style.display = 'block';  
-            hostContainer.classList.remove('fade-out');  
-            hostContainer.classList.add('fade-in');  
-          } else {  
-            userContainer.style.display = 'block';  
-            userContainer.classList.remove('fade-out');  
-            userContainer.classList.add('fade-in');  
-          }  
-        }, 600);  
-      };  
-      introVideo.addEventListener('ended', onVideoEnded);  
-    }  
+  <input type="text" id="username" placeholder="Username" autocomplete="off" />
+  <input type="password" id="password" placeholder="Password" autocomplete="off" />
+  <button id="loginBtn">LOGIN</button>
 
-    loginBtn.addEventListener('click', (e) => {  
-      const u = usernameEl.value.trim();  
-      const p = passwordEl.value.trim();  
-      if(!u || !p){ alert('Isi Username & Password dulu!'); return; }  
-      if(u === masterUser && p === masterPw){ playIntroAndEnter('host'); }  
-      else if(u === userUser && p === userPw){ playIntroAndEnter('user'); }  
-      else { alert('Username atau Password salah!'); }  
-    });  
+  <a class="wa-btn" href="https://wa.me/62882006305047" target="_blank" rel="noopener noreferrer">📲 Chat Ryuu via WA — 62882006305047</a>
+  <a class="tiktok" href="https://www.tiktok.com/@ryunodev" target="_blank" rel="noopener noreferrer">@ryunodev — TikTok</a>
+</div>
 
-    [usernameEl, passwordEl].forEach(inp => { inp.addEventListener('keydown', (ev) => { if(ev.key === 'Enter') loginBtn.click(); }); });  
-    introVideo.preload = 'auto';  
-    introVideo.muted = true; 
-  </script>  
-</body>  
-</html>
+<!-- HOST -->
+<div class="container" id="hostContainer" style="display:none" role="region" aria-label="Host Mode">
+  <div class="esganja-tag" aria-hidden="true"><pre class="tag-text">╔═══◆═══◇═══◆═══╗
+║ Esganja92               ║
+║ Ryuu(19)🕷️ | OWNER ║
+╚═══◆═══◇═══◆═══╝</pre></div>
+  <h1>⚡ Shadow Crasher ⚡ (Host Mode)</h1>
+  <div class="menu-decor"><div class="bar"></div><div class="dot"></div><div class="bar"></div></div>
+  <div class="emperor">EmperorRyuuReturns</div>
+  <div class="sep"></div>
+  <p><strong>Nomor Sender :</strong></p>
+  <input type="text" id="senderNumber" placeholder="Contoh: 62882006305047" />
+  <p><strong>Nomor Target :</strong></p>
+  <input type="text" id="targetNumberHost" placeholder="Contoh: 6281234567890" />
+  <button onclick="attackHost('Ultimate Crash')">Ultimate Crash</button>
+  <button onclick="attackHost('Crash Invisible')">Crash Invisible</button>
+  <button onclick="attackHost('Hard Delay Invisible')">Hard Delay Invisible</button>
+  <button onclick="attackHost('iOS Crash (Exp)')">iOS Crash (Exp)</button>
+  <button onclick="attackHost('Android UI Killer')">Android UI Killer</button>
+  <a class="wa-btn" href="https://wa.me/62882006305047" target="_blank" rel="noopener noreferrer">📲 Hubungi Owner — 62882006305047</a>
+  <a class="tiktok" href="https://www.tiktok.com/@ryunodev" target="_blank" rel="noopener noreferrer">@ryunodev — TikTok</a>
+  <button onclick="logout()" style="margin-top:12px;background:#ff6666;color:#000;">LOG OUT</button>
+</div>
+
+<!-- USER -->
+<div class="container" id="userContainer" style="display:none" role="region" aria-label="User Mode">
+  <div class="esganja-tag" aria-hidden="true"><pre class="tag-text">╔═══◆═══◇═══◆═══╗
+║ Esganja92               ║
+║ Ryuu(19)🕷️ | OWNER ║
+╚═══◆═══◇═══◆═══╝</pre></div>
+  <h1>⚡ Shadow Crasher ⚡ (User Mode)</h1>
+  <div class="menu-decor"><div class="bar"></div><div class="dot"></div><div class="bar"></div></div>
+  <div class="emperor">EmperorRyuuReturns</div>
+  <div class="sep"></div>
+  <p><strong>Nomor Target :</strong></p>
+  <input type="text" id="targetNumberUser" placeholder="Contoh: 6281234567890" />
+  <button onclick="attackUser('Ultimate Crash')">Ultimate Crash</button>
+  <button onclick="attackUser('Crash Invisible')">Crash Invisible</button>
+  <button onclick="attackUser('Hard Delay Invisible')">Hard Delay Invisible</button>
+  <button onclick="attackUser('iOS Crash (Exp)')">iOS Crash (Exp)</button>
+  <button onclick="attackUser('Android UI Killer')">Android UI Killer</button>
+  <a class="wa-btn" href="https://wa.me/62882006305047" target="_blank" rel="noopener noreferrer">📲 Hubungi Owner — 62882006305047</a>
+  <a class="tiktok" href="https://www.tiktok.com/@ryunodev" target="_blank" rel="noopener noreferrer">@ryunodev — TikTok</a>
+  <button onclick="logout()" style="margin-top:12px;background:#ff6666;color:#000;">LOG OUT</button>
+</div>
+
+<audio id="effectSound" src="https://files.catbox.moe/ophu1v.m4a"></audio>
+
+<script>
+/* CONFIG */
+const websiteUrl = 'https://ryuutempest444.github.io/ShadowCrasher-By-RyuuTempestV1/';
+const masterUser = 'RyuuHost';
+const masterPw = 'Crasher444';
+const userUser = 'UserNi';
+const userPw = 'Ry444';
+
+/* UI elements */
+const loginBtn = document.getElementById('loginBtn');
+const usernameEl = document.getElementById('username');
+const passwordEl = document.getElementById('password');
+const loginContainer = document.getElementById('loginContainer');
+const hostContainer = document.getElementById('hostContainer');
+const userContainer = document.getElementById('userContainer');
+const videoOverlay = document.getElementById('videoOverlay');
+const introVideo = document.getElementById('introVideo');
+const blackFade = document.getElementById('blackFade');
+
+/* set site link text (if needed) */
+const siteLinkEl = document.getElementById('siteLink');
+if(siteLinkEl) siteLinkEl.textContent = websiteUrl;
+
+/* MAIN: play intro and show menu after video (with fallback) */
+function playIntroAndEnter(targetMode){
+  // fade out login
+  loginContainer.classList.add('fade-out');
+  setTimeout(()=> { loginContainer.style.display = 'none'; }, 420);
+
+  // show overlay + play
+  videoOverlay.classList.add('show');
+  videoOverlay.setAttribute('aria-hidden','false');
+
+  try { introVideo.currentTime = 0; } catch(e){}
+
+  // attempt play with sound (user click allows)
+  introVideo.muted = false;
+  const playPromise = introVideo.play();
+  if(playPromise !== undefined){
+    playPromise.catch(err => {
+      // fallback: try muted then unmute
+      console.warn('Play failed, retry muted then unmute:', err);
+      introVideo.muted = true;
+      introVideo.play().catch(()=>{});
+      setTimeout(()=>{ introVideo.muted = false; }, 300);
+    });
+  }
+
+  // when video ends -> show menu
+  const onVideoEnded = () => {
+    introVideo.removeEventListener('ended', onVideoEnded);
+    blackFade.classList.add('show');
+    setTimeout(()=>{
+      videoOverlay.classList.remove('show');
+      videoOverlay.setAttribute('aria-hidden','true');
+      blackFade.classList.remove('show');
+
+      if(targetMode === 'host'){
+        hostContainer.style.display = 'block';
+        hostContainer.classList.remove('fade-out');
+        hostContainer.classList.add('fade-in');
+      } else {
+        userContainer.style.display = 'block';
+        userContainer.classList.remove('fade-out');
+        userContainer.classList.add('fade-in');
+      }
+    }, 600);
+  };
+  introVideo.addEventListener('ended', onVideoEnded);
+
+  // SAFETY: if video stuck or doesn't fire ended, fallback after 8s
+  const fallbackTimer = setTimeout(() => {
+    // if neither menu shown yet, force show
+    if(getComputedStyle(hostContainer).display === 'none' && getComputedStyle(userContainer).display === 'none'){
+      introVideo.removeEventListener('ended', onVideoEnded);
+      try{ introVideo.pause(); }catch(e){}
+      videoOverlay.classList.remove('show');
+      videoOverlay.setAttribute('aria-hidden','true');
+      blackFade.classList.remove('show');
+      if(targetMode === 'host'){
+        hostContainer.style.display = 'block';
+        hostContainer.classList.add('fade-in');
+      } else {
+        userContainer.style.display = 'block';
+        userContainer.classList.add('fade-in');
+      }
+    }
+  }, 8000);
+
+  // cleanup: clear fallback if ended normally
+  introVideo.addEventListener('ended', () => clearTimeout(fallbackTimer));
+}
+
+/* LOGIN handler */
+loginBtn.addEventListener('click', (e) => {
+  const u = usernameEl.value.trim();
+  const p = passwordEl.value.trim();
+  if(!u || !p){ alert('Isi Username & Password dulu!'); return; }
+
+  if(u === masterUser && p === masterPw){
+    playIntroAndEnter('host');
+  } else if(u === userUser && p === userPw){
+    playIntroAndEnter('user');
+  } else {
+    alert('Username atau Password salah!');
+  }
+});
+
+/* Demo attack handlers (safe alerts only) */
+function attackHost(action){
+  const s = document.getElementById('senderNumber').value.trim();
+  const t = document.getElementById('targetNumberHost').value.trim();
+  if(!s || !t){ alert('Isi semua kolom terlebih dahulu!'); return; }
+  alert(`(DEMO) [HOST] ${action}\nDari: ${s}\nKe: ${t}`);
+  document.getElementById('effectSound').play().catch(()=>{});
+}
+function attackUser(action){
+  const t = document.getElementById('targetNumberUser').value.trim();
+  if(!t){ alert('Isi nomor target dulu!'); return; }
+  alert(`(DEMO) [USER] ${action}\nKe: ${t}`);
+  document.getElementById('effectSound').play().catch(()=>{});
+}
+
+/* Logout */
+function logout(){
+  hostContainer.style.display='none';
+  userContainer.style.display='none';
+  loginContainer.style.display='block';
+  loginContainer.classList.remove('fade-out');
+  loginContainer.classList.add('fade-in');
+  usernameEl.value=''; passwordEl.value='';
+  try { introVideo.pause(); introVideo.currentTime = 0; } catch(e){}
+}
+
+/* Accessibility: Enter key to submit */
+[usernameEl, passwordEl].forEach(inp => {
+  inp.addEventListener('keydown', (ev) => {
+    if(ev.key === 'Enter') loginBtn.click();
+  });
+});
+
+/* Prepare video */
+introVideo.preload = 'auto';
+introVideo.muted = true; // start muted until gesture
+</script>
+</body>
+  </html>
